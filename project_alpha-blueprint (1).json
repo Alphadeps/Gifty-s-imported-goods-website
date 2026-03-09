@@ -1,0 +1,318 @@
+{
+  "version": "1.0.0",
+  "timestamp": "2026-03-06T10:39:03.621Z",
+  "components": [
+    {
+      "id": "c1",
+      "name": "Public Storefront",
+      "role": "CLIENT",
+      "zone": "PUBLIC",
+      "meta": {
+        "TECH STACK": "Next.js",
+        "TYPE": "Static/SSR"
+      },
+      "linkedTo": [
+        "c3"
+      ],
+      "securityNote": "Public facing. No user auth required. Only fetches public product data.",
+      "x": 1280,
+      "y": 600
+    },
+    {
+      "id": "c2",
+      "name": "Admin Dashboard",
+      "role": "CLIENT",
+      "zone": "RESTRICTED",
+      "meta": {
+        "TECH STACK": "React (SPA)",
+        "ACCESS": "Internal Only"
+      },
+      "linkedTo": [],
+      "securityNote": "Strictly protected. Must enforce login before loading the app.",
+      "x": 1900,
+      "y": 580
+    },
+    {
+      "id": "c3",
+      "name": "Core API Service",
+      "role": "SERVICE",
+      "zone": "PRIVATE",
+      "meta": {
+        "TECH STACK": "Node.js / Express",
+        "PORT": "8080"
+      },
+      "linkedTo": [
+        "c5"
+      ],
+      "securityNote": "Implements Role-Based Access Control (RBAC). Validates JWTs on all /admin routes.",
+      "x": 1620,
+      "y": 320
+    },
+    {
+      "id": "c4",
+      "name": "Admin Auth Provider",
+      "role": "AUTH",
+      "zone": "PUBLIC",
+      "meta": {
+        "PROVIDER": "Auth0 / Clerk",
+        "PROTOCOL": "OAuth 2.0 + JWT"
+      },
+      "linkedTo": [
+        "c3",
+        "c2"
+      ],
+      "securityNote": "Handles MFA and passwordless login for admins. Issues short-lived JWTs.",
+      "x": 1820,
+      "y": 840
+    },
+    {
+      "id": "c5",
+      "name": "Primary DB",
+      "role": "DATABASE",
+      "zone": "RESTRICTED",
+      "meta": {
+        "ENGINE": "PostgreSQL",
+        "NETWORK": "Private VPC"
+      },
+      "linkedTo": [],
+      "securityNote": "Not exposed to the internet. Only accepts connections from the Core API Service.",
+      "x": 1960,
+      "y": 380
+    }
+  ],
+  "tables": [
+    {
+      "id": "t1",
+      "name": "admin",
+      "x": 0,
+      "y": 700,
+      "fields": [
+        {
+          "id": "f1",
+          "name": "id",
+          "type": "UUID",
+          "isPk": true,
+          "isFk": false
+        },
+        {
+          "id": "f2",
+          "name": "email",
+          "type": "VARCHAR",
+          "isPk": false,
+          "isFk": false
+        },
+        {
+          "id": "f3",
+          "name": "password_hash",
+          "type": "VARCHAR",
+          "isPk": false,
+          "isFk": false
+        },
+        {
+          "id": "f4",
+          "name": "role",
+          "type": "VARCHAR",
+          "isPk": false,
+          "isFk": false
+        },
+        {
+          "id": "f5",
+          "name": "last_login",
+          "type": "TIMESTAMP",
+          "isPk": false,
+          "isFk": false
+        }
+      ]
+    },
+    {
+      "id": "t2",
+      "name": "products",
+      "x": 550,
+      "y": 150,
+      "fields": [
+        {
+          "id": "f6",
+          "name": "id",
+          "type": "UUID",
+          "isPk": true,
+          "isFk": false
+        },
+        {
+          "id": "f7",
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "isPk": false,
+          "isFk": false,
+          "targetTableId": "t1"
+        },
+        {
+          "id": "f8",
+          "name": "name",
+          "type": "VARCHAR",
+          "isPk": false,
+          "isFk": false
+        },
+        {
+          "id": "f9",
+          "name": "current_price",
+          "type": "INT",
+          "isPk": false,
+          "isFk": false
+        },
+        {
+          "id": "f10",
+          "name": "available",
+          "type": "BOOL",
+          "isPk": false,
+          "isFk": false
+        },
+        {
+          "id": "f_1772653780303",
+          "name": "new_price",
+          "type": "INT",
+          "isPk": false,
+          "isFk": false
+        },
+        {
+          "id": "f_1772653931705",
+          "name": "description",
+          "type": "VARCHAR",
+          "isPk": false,
+          "isFk": false
+        },
+        {
+          "id": "f_1772654108959",
+          "name": "category",
+          "type": "VARCHAR",
+          "isPk": false,
+          "isFk": true,
+          "targetTableId": "t_1772655047341"
+        },
+        {
+          "id": "f_1772654220804",
+          "name": "quantity",
+          "type": "INT",
+          "isPk": false,
+          "isFk": false
+        }
+      ]
+    },
+    {
+      "id": "t_1772655047341",
+      "name": "categories",
+      "x": 180,
+      "y": 240,
+      "fields": [
+        {
+          "id": "f_1772655047341",
+          "name": "id",
+          "type": "UUID",
+          "isPk": false,
+          "isFk": false
+        },
+        {
+          "id": "f_1772655069483",
+          "name": "name",
+          "type": "VARCHAR",
+          "isPk": true,
+          "isFk": false
+        }
+      ]
+    }
+  ],
+  "endpoints": [
+    {
+      "id": "e1",
+      "method": "GET",
+      "path": "/api/v1/public/products",
+      "description": "Fetch storefront products",
+      "status": 200,
+      "isSecure": false,
+      "responseBody": "{\n200:OK\n}",
+      "requestBody": "{\n    \"id\": \"789e8400-e29b-41d4-a716-446655440000\",\n    \"name\": \"Wireless Gaming Mouse\",\n    \"description\": \"High-precision optical sensor with  sustainability long battery life.\",\n    \"current_price\": 5999,\n    \"available\": true,\n    \"category\": \"Peripherals\"\n  },\n  {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"name\": \"Mechanical Keyboard\",\n    \"description\": \"RGB backlit mechanical keyboard with blue switches.\",\n    \"current_price\": 8900,\n    \"available\": true,\n    \"category\": \"Peripherals\"\n  }\n\n"
+    },
+    {
+      "id": "e2",
+      "method": "POST",
+      "path": "/api/v1/admin/products",
+      "description": "Create a new product (Admin Only)",
+      "status": 201,
+      "isSecure": true,
+      "requestBody": "{\n  \"name\": \"Noise Cancelling Headphones\",\n  \"description\": \"Premium quality over-ear headphones with active noise cancellation.\",\n  \"current_price\": 29900,\n  \"quantity\": 50,\n  \"available\": true,\n  \"category_id\": \"cat_123\"\n}\n",
+      "responseBody": "{\n  \"id\": \"9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d\",\n  \"message\": \"Product created successfully.\"\n}\n"
+    },
+    {
+      "id": "e_1772655547482",
+      "method": "GET",
+      "path": "/api/v1/admin/products",
+      "description": "Fetch admin products (admin only)",
+      "status": 200,
+      "isSecure": true,
+      "responseBody": " {\n    \"id\": \"789e8400-e29b-41d4-a716-446655440000\",\n    \"name\": \"Wireless Gaming Mouse\",\n    \"current_price\": 5999,\n    \"quantity\": 120,\n    \"available\": true\n  }\n\n",
+      "requestBody": "{\nNone \n}"
+    },
+    {
+      "id": "e_1772655614961",
+      "method": "DELETE",
+      "path": "/api/v1/admin/products",
+      "description": "Delete admin products (admin only)",
+      "status": 200,
+      "isSecure": true,
+      "requestBody": "{\n  \"id\": \"789e8400-e29b-41d4-a716-446655440000\"\n}\n",
+      "responseBody": "{\n  \"message\": \"Product successfully deleted.\"\n}\n"
+    },
+    {
+      "id": "e_1772655695970",
+      "method": "PUT",
+      "path": "/api/v1/admin/products",
+      "description": "Modify admin products (admin only)",
+      "status": 200,
+      "isSecure": true,
+      "requestBody": "{\n  \"id\": \"789e8400-e29b-41d4-a716-446655440000\",\n  \"current_price\": 5499,\n  \"available\": false\n}\n",
+      "responseBody": "{\n  \"message\": \"Product updated successfully.\"\n}\n"
+    },
+    {
+      "id": "e_1772655921815",
+      "method": "GET",
+      "path": "/api/v1/admin/categories",
+      "description": "Fetch categories from database",
+      "status": 200,
+      "isSecure": true,
+      "responseBody": "\n  { \"id\": \"cat_123\", \"name\": \"Electronics\" },\n  { \"id\": \"cat_456\", \"name\": display_name: \"Office Supplies\" }\n",
+      "requestBody": "{\nNone \n}"
+    },
+    {
+      "id": "e_1772655989849",
+      "method": "POST",
+      "path": "/api/v1/admin/categories",
+      "description": "Add new categories to database",
+      "status": 201,
+      "isSecure": true,
+      "requestBody": "{\n  \"name\": \"Home Appliances\"\n}\n",
+      "responseBody": "{\n  \"id\": \"cat_789\",\n  \"name\": \"Home Appliances\"\n}\n"
+    },
+    {
+      "id": "e_1772656026359",
+      "method": "DELETE",
+      "path": "/api/v1/admin/categories",
+      "description": "Delete categories from database",
+      "status": 200,
+      "isSecure": true,
+      "requestBody": "{\n  \"id\": \"789e8400-e29b-41d4-a716-446655440000\"\n}\n",
+      "responseBody": "{\n  \"message\": \"Product successfully deleted.\"\n}\n"
+    }
+  ],
+  "config": {
+    "name": "PROJECT_ALPHA",
+    "description": "E-commerce Backend Architecture",
+    "version": "1.0.4",
+    "environment": "DEVELOPMENT",
+    "securityLevel": "HIGH",
+    "features": {
+      "strictSsl": true,
+      "corsEnabled": true,
+      "rateLimiting": true,
+      "auditLogging": false
+    }
+  }
+}
