@@ -1,0 +1,70 @@
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+require('dotenv').config();
+
+const app = express();
+const PORT = process.env.PORT || 8080;
+
+// Enable Strict SSL (Helmet covers many security headers, including HSTS)
+app.use(helmet());
+
+// Configure CORS
+// Allowing requests from the Public Storefront and Admin Dashboard domains
+const allowedOrigins = [
+    'http://localhost:3000', // Typical Next.js default port
+    'http://localhost:3001', // Local Admin Dashboard
+    process.env.PUBLIC_STOREFRONT_URL,
+    process.env.ADMIN_DASHBOARD_URL
+].filter(Boolean); // Remove undefined values if env vars aren't set yet
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
+}));
+
+// Configure Rate Limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    message: 'Too many requests from this IP, please try again after 15 minutes'
+});
+
+// Apply rate limiting to all requests
+app.use(limiter);
+
+// Middleware to parse JSON
+app.use(express.json());
+
+// Basic health check route
+app.get('/api/v1/public/products', (req, res) => {
+    res.status(200).json({ status: 'healthy', message: 'Public products route (Unsecured)' });
+});
+
+// Admin routes (Secured)
+const { verifyAdminJWT } = require('./src/middleware/auth');
+app.post('/api/v1/admin/products', verifyAdminJWT, (req, res) => {
+    res.status(201).json({ message: 'Product created successfully. (Protected)' });
+});
+
+// Error handling middleware for express-jwt
+app.use((err, req, res, next) => {
+    if (err.name === 'UnauthorizedError') {
+        res.status(401).json({ error: 'Unauthorized', message: 'Invalid or missing token.' });
+    } else {
+        next(err);
+    }
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
