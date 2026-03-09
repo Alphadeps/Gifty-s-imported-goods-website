@@ -49,6 +49,12 @@ app.use(express.json());
 const publicRoutes = require('./src/routes/publicRoutes');
 const adminRoutes = require('./src/routes/adminRoutes');
 
+// Keep-alive endpoint for cronjobs
+app.get('/keep-alive', (req, res) => {
+    res.status(200).json({ status: 'ok', message: 'Server is alive', timestamp: new Date().toISOString() });
+});
+
+
 // Public routes (Unsecured)
 app.use('/api/v1/public', publicRoutes);
 
