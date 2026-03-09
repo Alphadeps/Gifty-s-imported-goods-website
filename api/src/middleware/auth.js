@@ -1,20 +1,18 @@
 const { expressjwt: jwt } = require('express-jwt');
-const jwksRsa = require('jwks-rsa');
 
-// Authentication middleware using Auth0
+// Ensure the SUPABASE_JWT_SECRET environment variable is loaded
+if (!process.env.SUPABASE_JWT_SECRET) {
+    console.error("FATAL ERROR: SUPABASE_JWT_SECRET is not defined in the environment.");
+    process.exit(1);
+}
+
+// Authentication middleware using Supabase
 const verifyAdminJWT = jwt({
-    // Dynamically provide a signing key based on the kid in the header and the signing keys provided by the JWKS endpoint.
-    secret: jwksRsa.expressJwtSecret({
-        cache: true,
-        rateLimit: true,
-        jwksRequestsPerMinute: 5,
-        jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`
-    }),
+    // Supabase signs tokens with a single symmetric secret key
+    secret: process.env.SUPABASE_JWT_SECRET,
 
-    // Validate the audience and the issuer.
-    audience: process.env.AUTH0_AUDIENCE,
-    issuer: `https://${process.env.AUTH0_DOMAIN}/`,
-    algorithms: ['RS256']
+    // We expect the HS256 algorithm from Supabase (unlike RS256 from Auth0)
+    algorithms: ['HS256']
 });
 
 module.exports = {

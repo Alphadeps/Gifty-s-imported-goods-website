@@ -45,16 +45,16 @@ app.use(limiter);
 // Middleware to parse JSON
 app.use(express.json());
 
-// Basic health check route
-app.get('/api/v1/public/products', (req, res) => {
-    res.status(200).json({ status: 'healthy', message: 'Public products route (Unsecured)' });
-});
+// Import Domain Routers
+const publicRoutes = require('./src/routes/publicRoutes');
+const adminRoutes = require('./src/routes/adminRoutes');
 
-// Admin routes (Secured)
+// Public routes (Unsecured)
+app.use('/api/v1/public', publicRoutes);
+
+// Admin routes (Secured - Authentication Integration deferred to Phase 3)
 const { verifyAdminJWT } = require('./src/middleware/auth');
-app.post('/api/v1/admin/products', verifyAdminJWT, (req, res) => {
-    res.status(201).json({ message: 'Product created successfully. (Protected)' });
-});
+app.use('/api/v1/admin', verifyAdminJWT, adminRoutes);
 
 // Error handling middleware for express-jwt
 app.use((err, req, res, next) => {

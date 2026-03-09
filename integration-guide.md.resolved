@@ -1,0 +1,72 @@
+# Phase 3: Integration Guide for PROJECT_ALPHA
+
+This document outlines everything implemented by **Developer B** (Catalog & APIs Lead) and provides exact instructions for the **Integrator / Developer A** to secure and finalize the backend architecture.
+
+---
+
+## 🏗️ 1. What We Have Implemented (Developer B)
+
+We have built the complete catalog foundation and public endpoints optimized for premium cosmetic storefronts.
+
+### Database Schema (Neon PostgreSQL)
+We created 4 robust tables:
+*   `admin` (from Developer A's initial blueprint)
+*   `categories`: Stores `id`, `name`, and an auto-generated SEO `slug`.
+*   `products`: Stores all product information including `current_price`, `available` flag, `quantity`, `description`.
+    *   **Enhancements added:** `slug` (SEO routing), `image_urls` (for galleries), `attributes` (JSONB for variants), `blurhash` (for fast frontend loading), and `deleted_at` (for soft-deletes).
+*   `inquiries`: A table to store contact form submissions to prevent email spam.
+
+### Modular Controllers (`api/src/controllers`)
+*   `categoryController.js`: Full CRUD operations.
+*   `productController.js`: Full CRUD. Automatically generates slugs, handles dynamic PUT updates, filters public requests gracefully, and soft-deletes records instead of destroying them.
+*   `inquiryController.js`: Handles POST requests for contact conversions.
+
+### Application Routing (`api/src/routes`)
+*   **Public Routes:** (`/api/v1/public/*`)
+    *   `GET /products` (Fetch catalog grid)
+    *   `GET /products/:slug` (Specific item for SEO cards)
+    *   `POST /inquiries` (Contact form, heavily rate-limited to 3 requests/hour/IP)
+*   **Admin Routes:** (`/api/v1/admin/*`)
+    *   Full `GET / POST / PUT / DELETE` endpoints for both products and categories.
+
+---
+
+## 🚀 2. How to Integrate (Instructions for Developer A)
+
+Currently, all routes are mounted in `server.js`, but the `/api/v1/admin` routes are sitting **unprotected** while we developed the functionality. It is your job to lock them down.
+
+### Step 1. Finalize the Database Pool Environment
+Ensure the production or staging environment contains the `DATABASE_URL` environment variable pointing to the PostgreSQL connection string. My code automatically picks this up in `api/src/db/index.js`.
+
+### Step 2. Wrap the Admin Router with Auth Middleware
+You built the `verifyAdminJWT` middleware in `api/src/middleware/auth.js`. You now need to apply it specifically to the Admin Router.
+
+Open `api/server.js` and locate the Router Configuration section at the bottom.
+
+**Change this current code:**
+```javascript
+// Admin routes (Secured - Authentication Integration deferred to Phase 3)
+// const { verifyAdminJWT } = require('./src/middleware/auth');
+app.use('/api/v1/admin', adminRoutes);
+```
+
+**To this integrated code:**
+```javascript
+// Bring in your Auth0/Clerk JWT Middleware
+const { verifyAdminJWT } = require('./src/middleware/auth');
+
+// Apply the middleware ONLY to the admin routes
+app.use('/api/v1/admin', verifyAdminJWT, adminRoutes);
+```
+
+### Step 3. Verification Testing
+After applying your middleware, perform the "Handshake" tests:
+
+1.  **Public Test:** `GET http://localhost:8080/api/v1/public/products` 
+    *   *Expected:* `200 OK` (Route bypasses JWT check successfully).
+2.  **Protected Fail Test:** `POST http://localhost:8080/api/v1/admin/categories` **without** a Bearer token.
+    *   *Expected:* `401 Unauthorized`.
+3.  **Protected Success Test:** Generate a valid JWT from your Auth Provider (Auth0/Clerk), and send the same POST request with the `Authorization: Bearer <TOKEN>` header.
+    *   *Expected:* `201 Created`.
+
+Once Step 3 is validated, the entire API Service (Component c3) in the blueprint is officially complete, secure, and ready for frontend consumption!
