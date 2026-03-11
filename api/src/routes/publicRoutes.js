@@ -3,6 +3,7 @@ const router = express.Router();
 const rateLimit = require('express-rate-limit');
 
 const productController = require('../controllers/productController');
+const categoryController = require('../controllers/categoryController');
 const inquiryController = require('../controllers/inquiryController');
 
 // Super Strict Limiter specifically for contact form to prevent spam
@@ -19,6 +20,9 @@ router.get('/products', productController.getPublicProducts);
 
 // GET /api/v1/public/products/:slug (SEO Individual Card View)
 router.get('/products/:slug', productController.getPublicProductBySlug);
+
+// GET /api/v1/public/categories
+router.get('/categories', categoryController.getAllCategories);
 
 // POST /api/v1/public/inquiries (Contact Form)
 router.post('/inquiries', inquiryLimiter, inquiryController.createInquiry);
