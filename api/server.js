@@ -7,6 +7,9 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+// Trust the first proxy (Render) for accurate rate limiting
+app.set('trust proxy', 1);
+
 // Enable Strict SSL (Helmet covers many security headers, including HSTS)
 app.use(helmet());
 
@@ -21,9 +24,18 @@ const allowedOrigins = [
 
 app.use(cors({
     origin: function (origin, callback) {
-        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        // Allow requests with no origin (like mobile apps or curl) or null (file:// protocol for testing)
+        // Also allow local network development origins
+        const isLocalNetwork = origin && (
+            origin.startsWith('http://127.0.0.1') || 
+            origin.startsWith('http://localhost') || 
+            origin.startsWith('http://192.168.')
+        );
+
+        if (!origin || origin === 'null' || isLocalNetwork || allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
         } else {
+            console.warn(`Blocked by CORS: ${origin}`);
             callback(new Error('Not allowed by CORS'));
         }
     },
