@@ -18,6 +18,7 @@ app.use(helmet());
 const allowedOrigins = [
     'http://localhost:3000', // Typical Next.js default port
     'http://localhost:3001', // Local Admin Dashboard
+    'https://frontend-xi-eight-41.vercel.app',
     process.env.PUBLIC_STOREFRONT_URL,
     process.env.ADMIN_DASHBOARD_URL
 ].filter(Boolean); // Remove undefined values if env vars aren't set yet
@@ -70,9 +71,9 @@ app.get('/keep-alive', (req, res) => {
 // Public routes (Unsecured)
 app.use('/api/v1/public', publicRoutes);
 
-// Admin routes (Secured - Authentication Integration deferred to Phase 3)
-const { verifyAdminJWT } = require('./src/middleware/auth');
-app.use('/api/v1/admin', verifyAdminJWT, adminRoutes);
+// Admin routes (Secured - restricted to owner only via Supabase Auth)
+const { verifyAdminJWT, restrictToOwner } = require('./src/middleware/auth');
+app.use('/api/v1/admin', verifyAdminJWT, restrictToOwner, adminRoutes);
 
 // Error handling middleware for express-jwt
 app.use((err, req, res, next) => {

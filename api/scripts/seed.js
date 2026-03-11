@@ -1,9 +1,9 @@
 const { Pool } = require('pg');
 const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '../../api/.env') });
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const crypto = require('crypto');
 
-// Generate UUID for testing locally since DB migrator might not have extension enabled automatically
+// Generate UUID for testing
 const uuid = () => crypto.randomUUID();
 
 const pool = new Pool({
@@ -15,84 +15,298 @@ const generateSlug = (name) => {
 };
 
 const categories = [
-    { id: uuid(), name: 'Personal' }, // Replaces Grooming / Personal Care & Grooming
-    { id: uuid(), name: 'Household' },          // Replaces Home / Home Essentials
-    { id: uuid(), name: 'Bottles' },    // Replaces Drinkware / Drinkware & Hydration
-    { id: uuid(), name: 'Grocery' },         // Replaces Pantry / Pantry & Gourmet
-    { id: uuid(), name: 'Health' },        // Replaces Wellness / Health & Wellness
-    { id: uuid(), name: 'Shower' },              // Replaces Bath / Bath & Body
-    { id: uuid(), name: 'Skincare' },                 // Replaces Skincare
-    { id: uuid(), name: 'Bags' }      // Replaces Accessories / Travel & Accessories
+    { id: uuid(), name: 'Personal' },
+    { id: uuid(), name: 'Household' },
+    { id: uuid(), name: 'Bottles' },
+    { id: uuid(), name: 'Grocery' },
+    { id: uuid(), name: 'Health' },
+    { id: uuid(), name: 'Shower' },
+    { id: uuid(), name: 'Skincare' },
+    { id: uuid(), name: 'Bags' }
 ];
 
 const findCatId = (nameMatch) => categories.find(c => c.name.includes(nameMatch)).id;
 
 const products = [
-    // --- 3 FEATURED PREMIUM PRODUCTS (Landing Page) ---
-    { name: 'Vital Proteins Collagen Peptides', price: 55000, cat: 'Health', img: '/images/food bags and supplement/vital proteins collagen peptides.png', featured: true },
-    { name: 'Royal Brown Basmati Rice (Premium)', price: 45000, cat: 'Grocery', img: '/images/food/royal brown basmati rice.png', featured: true },
-    { name: 'Ello Port Premium Bottle (Purple)', price: 21000, cat: 'Bottles', img: '/images/ello port bottle/purple ello port bottle.png', featured: true },
-
-    // --- STANDARD CATALOG ---
-    // Personal Care & Grooming
-    { name: 'Gillette Ultimate Protection', price: 12500, cat: 'Personal', img: '/images/deodorant and antiperspirant/gillette ultimate protection.png', featured: false },
-    { name: 'Degree Antiperspirant 1', price: 8500, cat: 'Personal', img: '/images/deodorant and antiperspirant/degree antiperspirant.png', featured: false },
-    { name: 'Degree Antiperspirant 2', price: 8500, cat: 'Personal', img: '/images/deodorant and antiperspirant/degree antiperspirant (2).png', featured: false },
-    { name: 'Dove Advanced Care Invisible+', price: 9500, cat: 'Personal', img: '/images/deodorant and antiperspirant/dove advanced care invisible+.png', featured: false },
-    { name: 'Dove Men+Care Antiperspirant', price: 9000, cat: 'Personal', img: '/images/deodorant and antiperspirant/dove men+care antiperspirant.png', featured: false },
-    { name: 'Outlast Deodorant', price: 8000, cat: 'Personal', img: '/images/deodorant and antiperspirant/outlast deodorant.png', featured: false },
-    { name: 'Secret Deodorant', price: 8500, cat: 'Personal', img: '/images/deodorant and antiperspirant/secret deodorant.png', featured: false },
-
-    // Home Essentials
-    { name: 'Kirkland Ultra Shine Detergent', price: 32000, cat: 'Household', img: '/images/detergent and air freshener/kirkland ultra shine.png', featured: false },
-    { name: 'Febreze Air', price: 11000, cat: 'Household', img: '/images/detergent and air freshener/febreze air.png', featured: false },
-    { name: 'Febreze Classic', price: 10500, cat: 'Household', img: '/images/detergent and air freshener/febreze.png', featured: false },
-    { name: 'Palmolive Dish Soap', price: 7500, cat: 'Household', img: '/images/detergent and air freshener/palmolive.png', featured: false },
-
-    // Drinkware & Hydration
-    { name: 'Ello Port Bottle (Standard)', price: 21000, cat: 'Bottles', img: '/images/ello port bottle/ello port.png', featured: false },
-    { name: 'Ello Port Bottle (White)', price: 21000, cat: 'Bottles', img: '/images/ello port bottle/whitw ello port bottle.png', featured: false },
-
-    // Pantry & Gourmet
-    { name: 'Jasmine Rice', price: 38000, cat: 'Grocery', img: '/images/food/jasmine rice.png', featured: false },
-    { name: 'Kirkland Cooking Oil', price: 26000, cat: 'Grocery', img: '/images/food/kirkland oil.png', featured: false },
-
-    // Health & Wellness
-    { name: 'Vital Proteins (Less Plastic)', price: 54000, cat: 'Health', img: '/images/food bags and supplement/80% less plastic vital proteins collagen peptides.png', featured: false },
-    { name: 'Kirkland Freezer Bags', price: 14000, cat: 'Household', img: '/images/food bags and supplement/kirkland freezer.png', featured: false }, // Moved from supplement to essentials
-
-    // Bath & Body
-    { name: 'Dove Body Wash', price: 13000, cat: 'Shower', img: '/images/shampoo and body+face wash/dove body wash.png', featured: false },
-    { name: 'Dove Deep Moisture', price: 13500, cat: 'Shower', img: '/images/shampoo and body+face wash/dove deep moisture.jpg', featured: false },
-    { name: 'Dove Men+Care Wash', price: 13000, cat: 'Shower', img: '/images/shampoo and body+face wash/dove men+care body+face wash.png', featured: false },
-    { name: 'Dove Sensitive Body Wash', price: 14000, cat: 'Shower', img: '/images/shampoo and body+face wash/dove sensitive skin body wash.png', featured: false },
-    { name: 'Irish Spring Body Wash', price: 11000, cat: 'Shower', img: '/images/shampoo and body+face wash/irish spring body wash.png', featured: false },
-    { name: 'Irish Spring Twin Body Wash', price: 20000, cat: 'Shower', img: '/images/shampoo and body+face wash/irish spring twin wash.png', featured: false },
-    { name: 'Dove Pink Beauty Bar', price: 4500, cat: 'Shower', img: '/images/soap bar/dove pink beauty bar.png', featured: false },
-    { name: 'Dove Sensitive Skin Soap', price: 4500, cat: 'Shower', img: '/images/soap bar/dove sensitive skin soap bar.png', featured: false },
-    { name: 'Dove Shea Butter Soap', price: 4800, cat: 'Shower', img: '/images/soap bar/dove shea butter soap bar.png', featured: false },
-    { name: 'Irish Spring Soap Bar', price: 3000, cat: 'Shower', img: '/images/soap bar/irish spring.png', featured: false },
-    { name: 'Olay Soap Bar', price: 5000, cat: 'Shower', img: '/images/soap bar/olay soap.png', featured: false },
-
-    // Skincare
-    { name: 'Cetaphil Gentle Skin Cleanser', price: 18000, cat: 'Skincare', img: '/images/skin cleanser and moisturizer/cetaphil gentle skin cleanser.png', featured: false },
-    { name: 'Cetaphil Moisturizing Cream', price: 21000, cat: 'Skincare', img: '/images/skin cleanser and moisturizer/cetaphil moisturizing cream.png', featured: false },
-    { name: 'Cetaphil Skin Cleanser', price: 18500, cat: 'Skincare', img: '/images/skin cleanser and moisturizer/cetaphil skin cleanser.png', featured: false },
-    { name: 'Makeup Remover', price: 9000, cat: 'Skincare', img: '/images/skin cleanser and moisturizer/makeup remover.png', featured: false },
-
-    // Travel & Accessories
-    { name: 'Members Mark Tote Bag', price: 12000, cat: 'Bags', img: '/images/tote bag or lunch box/member\'s mark tote bag.png', featured: false },
-    { name: 'Pink Members Mark Tote Bag', price: 12000, cat: 'Bags', img: '/images/tote bag or lunch box/pink member\'s mark tote bag.png', featured: false },
-    { name: 'Striped Members Mark Tote Bag', price: 12000, cat: 'Bags', img: '/images/tote bag or lunch box/stripes memeber\'s mark tote bag.png', featured: false },
-    { name: 'Veronica Hampton Lunch Box', price: 16000, cat: 'Bags', img: '/images/tote bag or lunch box/veronica hampton lunch box.png', featured: false },
+  {
+    "name": "Royal Brown Basmati Rice (Premium)",
+    "price": 45000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/food/royal%20brown%20basmati%20rice.png",
+    "featured": true,
+    "cat": "Grocery"
+  },
+  {
+    "name": "Ello Port Premium Bottle (Purple)",
+    "price": 21000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/ello%20port%20bottle/purple%20ello%20port%20bottle.png",
+    "featured": true,
+    "cat": "Bottles"
+  },
+  {
+    "name": "Gillette Ultimate Protection",
+    "price": 12500,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/deodorant%20and%20antiperspirant/gillette%20ultimate%20protection.png",
+    "featured": false,
+    "cat": "Personal"
+  },
+  {
+    "name": "Degree Antiperspirant 1",
+    "price": 8500,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/deodorant%20and%20antiperspirant/degree%20antiperspirant.png",
+    "featured": false,
+    "cat": "Personal"
+  },
+  {
+    "name": "Dove Advanced Care Invisible+",
+    "price": 9500,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/deodorant%20and%20antiperspirant/dove%20advanced%20care%20invisible+.png",
+    "featured": false,
+    "cat": "Personal"
+  },
+  {
+    "name": "Dove Men+Care Antiperspirant",
+    "price": 9000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/deodorant%20and%20antiperspirant/dove%20men+care%20antiperspirant.png",
+    "featured": false,
+    "cat": "Personal"
+  },
+  {
+    "name": "Outlast Deodorant",
+    "price": 8000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/deodorant%20and%20antiperspirant/outlast%20deodorant.png",
+    "featured": false,
+    "cat": "Personal"
+  },
+  {
+    "name": "Kirkland Ultra Shine Detergent",
+    "price": 32000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/detergent%20and%20air%20freshener/kirkland%20ultra%20shine.png",
+    "featured": false,
+    "cat": "Household"
+  },
+  {
+    "name": "Febreze Air",
+    "price": 11000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/detergent%20and%20air%20freshener/febreze%20air.png",
+    "featured": false,
+    "cat": "Household"
+  },
+  {
+    "name": "Febreze Classic",
+    "price": 10500,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/detergent%20and%20air%20freshener/febreze.png",
+    "featured": false,
+    "cat": "Household"
+  },
+  {
+    "name": "Ello Port Bottle (Standard)",
+    "price": 21000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/ello%20port%20bottle/ello%20port.png",
+    "featured": false,
+    "cat": "Bottles"
+  },
+  {
+    "name": "Ello Port Bottle (White)",
+    "price": 21000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/ello%20port%20bottle/whitw%20ello%20port%20bottle.png",
+    "featured": false,
+    "cat": "Bottles"
+  },
+  {
+    "name": "Kirkland Cooking Oil",
+    "price": 26000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/food/kirkland%20oil.png",
+    "featured": false,
+    "cat": "Grocery"
+  },
+  {
+    "name": "Kirkland Freezer Bags",
+    "price": 14000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/food%20bags%20and%20supplement/kirkland%20freezer.png",
+    "featured": false,
+    "cat": "Household"
+  },
+  {
+    "name": "Dove Deep Moisture",
+    "price": 13500,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/shampoo%20and%20body+face%20wash/dove%20deep%20moisture.jpg",
+    "featured": false,
+    "cat": "Shower"
+  },
+  {
+    "name": "Dove Men+Care Wash",
+    "price": 13000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/deodorant%20and%20antiperspirant/dove%20advanced%20care%20invisible+.png",
+    "featured": false,
+    "cat": "Shower"
+  },
+  {
+    "name": "Dove Sensitive Body Wash",
+    "price": 14000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/shampoo%20and%20body+face%20wash/dove%20sensitive%20skin%20body%20wash.png",
+    "featured": false,
+    "cat": "Shower"
+  },
+  {
+    "name": "Irish Spring Twin Body Wash",
+    "price": 20000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/shampoo%20and%20body+face%20wash/irish%20spring%20body%20wash.png",
+    "featured": false,
+    "cat": "Shower"
+  },
+  {
+    "name": "Dove Pink Beauty Bar",
+    "price": 4500,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/soap%20bar/dove%20pink%20beauty%20bar.png",
+    "featured": false,
+    "cat": "Shower"
+  },
+  {
+    "name": "Dove Sensitive Skin Soap",
+    "price": 4500,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/soap%20bar/dove%20sensitive%20skin%20soap%20bar.png",
+    "featured": false,
+    "cat": "Shower"
+  },
+  {
+    "name": "Olay Soap Bar",
+    "price": 5000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/soap%20bar/dove%20sensitive%20skin%20soap%20bar.png",
+    "featured": false,
+    "cat": "Shower"
+  },
+  {
+    "name": "Degree Antiperspirant 2",
+    "price": 8500,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/deodorant%20and%20antiperspirant/degree%20antiperspirant%20(2).png",
+    "featured": false,
+    "cat": "Personal"
+  },
+  {
+    "name": "Secret Deodorant",
+    "price": 8500,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/deodorant%20and%20antiperspirant/secret%20deodorant.png",
+    "featured": false,
+    "cat": "Personal"
+  },
+  {
+    "name": "Palmolive Dish Soap",
+    "price": 7500,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/detergent%20and%20air%20freshener/palmolive.png",
+    "featured": false,
+    "cat": "Household"
+  },
+  {
+    "name": "Jasmine Rice",
+    "price": 38000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/food/jasmine%20rice.png",
+    "featured": false,
+    "cat": "Grocery"
+  },
+  {
+    "name": "Dove Body Wash",
+    "price": 13000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/deodorant%20and%20antiperspirant/dove%20advanced%20care%20invisible+.png",
+    "featured": false,
+    "cat": "Shower"
+  },
+  {
+    "name": "Irish Spring Body Wash",
+    "price": 11000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/shampoo%20and%20body+face%20wash/irish%20spring%20body%20wash.png",
+    "featured": false,
+    "cat": "Shower"
+  },
+  {
+    "name": "Dove Shea Butter Soap",
+    "price": 4800,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/soap%20bar/dove%20sensitive%20skin%20soap%20bar.png",
+    "featured": false,
+    "cat": "Shower"
+  },
+  {
+    "name": "Cetaphil Gentle Skin Cleanser",
+    "price": 18000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/skin%20cleanser%20and%20moisturizer/cetaphil%20gentle%20skin%20cleanser.png",
+    "featured": false,
+    "cat": "Skincare"
+  },
+  {
+    "name": "Cetaphil Moisturizing Cream",
+    "price": 21000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/skin%20cleanser%20and%20moisturizer/cetaphil%20moisturizing%20cream.png",
+    "featured": false,
+    "cat": "Skincare"
+  },
+  {
+    "name": "Cetaphil Skin Cleanser",
+    "price": 18500,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/skin%20cleanser%20and%20moisturizer/cetaphil%20skin%20cleanser.png",
+    "featured": false,
+    "cat": "Skincare"
+  },
+  {
+    "name": "Makeup Remover",
+    "price": 9000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/skin%20cleanser%20and%20moisturizer/makeup%20remover.png",
+    "featured": false,
+    "cat": "Skincare"
+  },
+  {
+    "name": "Members Mark Tote Bag",
+    "price": 12000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/tote%20bag%20or%20lunch%20box/member's%20mark%20tote%20bag.png",
+    "featured": false,
+    "cat": "Bags"
+  },
+  {
+    "name": "Pink Members Mark Tote Bag",
+    "price": 12000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/tote%20bag%20or%20lunch%20box/pink%20member's%20mark%20tote%20bag.png",
+    "featured": false,
+    "cat": "Bags"
+  },
+  {
+    "name": "Veronica Hampton Lunch Box",
+    "price": 16000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/tote%20bag%20or%20lunch%20box/veronica%20hampton%20lunch%20box.png",
+    "featured": false,
+    "cat": "Bags"
+  },
+  {
+    "name": "Vital Proteins (Less Plastic)",
+    "price": 54000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/food%20bags%20and%20supplement/80%20less%20plastic%20vital%20proteins%20collagen%20peptides.png",
+    "featured": false,
+    "cat": "Health"
+  },
+  {
+    "name": "Irish Spring Soap Bar",
+    "price": 3000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/shampoo%20and%20body+face%20wash/irish%20spring%20body%20wash.png",
+    "featured": false,
+    "cat": "Shower"
+  },
+  {
+    "name": "Vital Proteins Collagen Peptides",
+    "price": 55000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/food%20bags%20and%20supplement/80%20less%20plastic%20vital%20proteins%20collagen%20peptides.png",
+    "featured": true,
+    "cat": "Health"
+  },
+  {
+    "name": "Striped Members Mark Tote Bag",
+    "price": 12000,
+    "img": "https://zwubakrzjgptslrypqli.supabase.co/storage/v1/object/public/images/products/tote%20bag%20or%20lunch%20box/member's%20mark%20tote%20bag.png",
+    "featured": false,
+    "cat": "Bags"
+  }
 ];
 
 async function seed() {
     console.log("Starting DB Seeder...");
 
     try {
-        // 1. ADD NEW SCHEMA COLUMN (is_featured) + image_urls if not exists
-        console.log("Updating Schema...");
         await pool.query(`
             ALTER TABLE products 
             ADD COLUMN IF NOT EXISTS is_featured BOOLEAN DEFAULT false;
@@ -103,14 +317,11 @@ async function seed() {
             ALTER TABLE products
             ADD COLUMN IF NOT EXISTS slug VARCHAR(255);
         `);
-        console.log("Schema Updated!");
 
-        // 2. CLEAR EXISTING DATA (For fresh start during dev)
         console.log("Clearing tables...");
         await pool.query(`TRUNCATE TABLE products CASCADE`);
         await pool.query(`TRUNCATE TABLE categories CASCADE`);
 
-        // 3. SEED CATEGORIES
         console.log("Seeding Categories...");
         for (const cat of categories) {
             const slug = generateSlug(cat.name);
@@ -120,21 +331,20 @@ async function seed() {
             );
         }
 
-        // 4. SEED PRODUCTS
         console.log("Seeding Products...");
         for (const p of products) {
             const catId = findCatId(p.cat);
             const slug = generateSlug(p.name);
-            const pgArraySyntax = `{${p.img}}`; // Native Postgres 1D array literal
+            const imageArray = [p.img]; 
 
             await pool.query(`
                 INSERT INTO products 
-                (id, name, slug, current_price, available, description, category_id, image_urls, is_featured, quantity) 
-                VALUES ($1, $2, $3, $4, true, $5, $6, $7, $8, 50)
-            `, [uuid(), p.name, slug, p.price, 'Premium quality imported item.', catId, pgArraySyntax, p.featured]);
+                (id, name, slug, current_price, available, description, category_id, image_urls, is_featured, quantity, blurhash) 
+                VALUES ($1, $2, $3, $4, true, $5, $6, $7, $8, 50, $9)
+            `, [uuid(), p.name, slug, p.price, 'Premium quality imported item.', catId, JSON.stringify(imageArray), p.featured, p.blurhash || null]);
         }
 
-        console.log("✅ Seed complete! Successfully added", categories.length, "categories and", products.length, "products.");
+        console.log("✅ Seed complete! Successfully synced with Supabase.");
 
     } catch (err) {
         console.error("Seeding failed: ", err);

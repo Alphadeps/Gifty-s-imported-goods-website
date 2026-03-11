@@ -1,4 +1,22 @@
 const pool = require('../db');
+const sharp = require('sharp');
+const { encode } = require('blurhash');
+
+// Utility to create a blurhash from a buffer
+const generateBlurHash = async (buffer) => {
+    try {
+        const { data, info } = await sharp(buffer)
+            .raw()
+            .ensureAlpha()
+            .resize(32, 32, { fit: 'inside' })
+            .toBuffer({ resolveWithObject: true });
+
+        return encode(new Uint8ClampedArray(data), info.width, info.height, 4, 4);
+    } catch (error) {
+        console.error('BlurHash generation error:', error);
+        return null;
+    }
+};
 
 // Utility to create a slug
 const generateSlug = (text) => {
@@ -77,7 +95,7 @@ const productController = {
 
     // POST /api/v1/admin/products
     createProduct: async (req, res) => {
-        const { name, current_price, available, new_price, description, category_id, quantity, image_urls, attributes, blurhash } = req.body;
+        const { name, current_price, available, new_price, description, category_id, quantity, image_urls, attributes, is_featured, blurhash } = req.body;
 
         if (!name || current_price === undefined) {
             return res.status(400).json({ error: 'Name and current_price are required' });
@@ -88,8 +106,8 @@ const productController = {
         try {
             const result = await pool.query(
                 `INSERT INTO products 
-                (name, slug, current_price, available, new_price, description, category_id, quantity, image_urls, attributes, blurhash) 
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
+                (name, slug, current_price, available, new_price, description, category_id, quantity, image_urls, attributes, blurhash, is_featured) 
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *`,
                 [
                     name,
                     slug,
@@ -101,7 +119,8 @@ const productController = {
                     quantity || 0,
                     image_urls || [],
                     attributes || {},
-                    blurhash || null
+                    blurhash,
+                    is_featured ?? false
                 ]
             );
             res.status(201).json({ id: result.rows[0].id, message: "Product created successfully.", product: result.rows[0] });
@@ -116,7 +135,7 @@ const productController = {
 
     // PUT /api/v1/admin/products
     updateProduct: async (req, res) => {
-        const { id, name, current_price, available, new_price, description, category_id, quantity, image_urls, attributes } = req.body;
+        const { id, name, current_price, available, new_price, description, category_id, quantity, image_urls, attributes, is_featured } = req.body;
 
         if (!id) {
             return res.status(400).json({ error: 'Product ID is required for update' });
@@ -160,15 +179,19 @@ const productController = {
             }
             if (image_urls !== undefined) {
                 updates.push(`image_urls = $${valueIndex++}`);
-                values.push(image_urls);
+                values.push(image_urls || []);
+            }
+            if (blurhash !== undefined) {
+                updates.push(`blurhash = $${valueIndex++}`);
+                values.push(blurhash);
             }
             if (attributes !== undefined) {
                 updates.push(`attributes = $${valueIndex++}`);
                 values.push(attributes);
             }
-            if (blurhash !== undefined) {
-                updates.push(`blurhash = $${valueIndex++}`);
-                values.push(blurhash);
+            if (is_featured !== undefined) {
+                updates.push(`is_featured = $${valueIndex++}`);
+                values.push(is_featured);
             }
 
             if (updates.length === 0) {
@@ -214,6 +237,52 @@ const productController = {
         } catch (error) {
             console.error('Error deleting product:', error);
             res.status(500).json({ error: 'Internal server error deleting product' });
+        }
+    },
+
+    // POST /api/v1/admin/upload-image
+    uploadImage: async (req, res) => {
+        try {
+            if (!req.file) {
+                return res.status(400).json({ error: 'No image file provided' });
+            }
+
+            const supabase = require('../db/supabase');
+            const bucket = process.env.SUPABASE_BUCKET || 'product-images';
+            const file = req.file;
+            
+            // Clean original name and prepend timestamp for uniqueness
+            const originalName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+            const fileName = `${Date.now()}-${originalName}`;
+            const filePath = `products/${fileName}`;
+
+            const { data, error } = await supabase.storage
+                .from(bucket)
+                .upload(filePath, file.buffer, {
+                    contentType: file.mimetype,
+                    upsert: false
+                });
+
+            if (error) throw error;
+
+            // Get Public URL
+            const { data: publicUrlData } = supabase.storage
+                .from(bucket)
+                .getPublicUrl(filePath);
+
+            // Generate Blurhash for the uploaded file
+            const blurhash = await generateBlurHash(file.buffer);
+
+            res.status(200).json({ 
+                url: publicUrlData.publicUrl,
+                fileName: fileName,
+                blurhash: blurhash,
+                message: 'Image uploaded successfully'
+            });
+
+        } catch (error) {
+            console.error('Upload Error:', error);
+            res.status(500).json({ error: 'Failed to upload image to storage' });
         }
     }
 };
