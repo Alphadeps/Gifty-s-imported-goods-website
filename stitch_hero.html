@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bellevia - Luxury Skincare</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2d4236", // Deep forest green for buttons/accents
+                        "accent": "#ec5b13",
+                        "background-light": "#f8f6f2", // Soft warm beige
+                        "background-dark": "#221610",
+                        "soft-tan": "#ece2d0",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .font-display { font-family: 'Public Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<nav class="flex items-center justify-between p-6 sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md z-50">
+<h2 class="text-xl font-bold tracking-[0.2em] text-primary dark:text-slate-100">BELLEVIA</h2>
+<div class="flex items-center gap-4">
+<button class="p-2 text-primary dark:text-slate-100">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="p-2 text-primary dark:text-slate-100">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</nav>
+<main class="flex flex-col min-h-[calc(100vh-80px)]">
+<div class="px-6 pt-4 pb-8 flex-grow flex flex-col items-center">
+<div class="w-full aspect-[4/5] rounded-xl overflow-hidden mb-10 shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Luxury skincare bottles on a beige background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBslK11vFZmd0R4116V71ma6HQ-Oy9CH8Xger_5KsVyDNIbTRf3i3w10fC5qml_U5TChrcZfcLQZdSwCYWAXr6I-Ms2ZVUCubNAud8Yg9IlxmyEDW-CJKVj5mZwU4Q6jJ4_fA6tubnfzorcG4cEmhsQpRA5_gv0wqWFfI0cLhijFqNNtVg5fz_4ImmVcFqMpBCvWssPdOrnnjVyLR7QEC7fOsfprn6ZZzo16XIB-o37LqB3bsKa_6GBtWyJdEZW6rAwvLUVRjHod2A"/>
+</div>
+<div class="text-center max-w-sm">
+<h1 class="font-serif text-4xl md:text-5xl italic text-primary dark:text-slate-100 leading-tight mb-4">
+                    Enriched with Botanical Extracts
+                </h1>
+<p class="text-slate-600 dark:text-slate-400 text-lg leading-relaxed mb-10 px-4">
+                    Discover the essence of nature with our meticulously crafted skincare rituals.
+                </p>
+<div class="flex flex-col items-center gap-6">
+<button class="bg-primary hover:bg-opacity-90 text-white px-8 py-5 rounded-full flex items-center gap-3 transition-all group">
+<span class="font-bold tracking-widest text-sm">SHOP THE COLLECTION</span>
+<div class="bg-white/20 rounded-full p-1 group-hover:translate-x-1 transition-transform">
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</div>
+</button>
+<div class="flex items-center gap-4 text-primary/60 dark:text-slate-400">
+<div class="h-[1px] w-8 bg-current"></div>
+<span class="text-xs tracking-[0.3em] font-semibold">EST. 2024</span>
+<div class="h-[1px] w-8 bg-current"></div>
+</div>
+</div>
+</div>
+</div>
+<section class="bg-soft-tan/30 dark:bg-primary/10 py-16 px-6">
+<div class="flex flex-col gap-12">
+<div class="flex flex-col items-center text-center">
+<span class="material-symbols-outlined text-primary mb-4 text-3xl">eco</span>
+<h3 class="font-serif text-2xl mb-2">Pure Ingredients</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-[250px]">
+                        Sourced from high-altitude gardens for maximum potency.
+                    </p>
+</div>
+<div class="flex flex-col items-center text-center">
+<span class="material-symbols-outlined text-primary mb-4 text-3xl">science</span>
+<h3 class="font-serif text-2xl mb-2">Clean Formulas</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-[250px]">
+                        Dermatologically tested and free from synthetic fragrances.
+                    </p>
+</div>
+</div>
+</section>
+</main>
+<footer class="mt-auto">
+<div class="flex gap-2 border-t border-slate-200 dark:border-slate-800 bg-background-light dark:bg-background-dark px-4 pb-8 pt-4">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary dark:text-slate-100" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">home</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-600" href="#">
+<span class="material-symbols-outlined">search</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-600" href="#">
+<span class="material-symbols-outlined">shopping_bag</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-600" href="#">
+<span class="material-symbols-outlined">person</span>
+</a>
+</div>
+</footer>
+</body></html>

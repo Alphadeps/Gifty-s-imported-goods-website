@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Products - Atsupi's Cosmetics Trading</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#E6CEB8">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Leckerli+One&display=swap"
+        rel="stylesheet">
+
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0&display=swap"
+        rel="stylesheet" />
+
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        main {
+            min-height: 80vh;
+        }
+    </style>
+</head>
+
+<body class="theme-light">
+    <!-- Header Component -->
+    <app-header></app-header>
+
+    <main>
+        <!-- Featured Products Section -->
+        <section class="products-section" style="padding-top: var(--space-xl);">
+            <div class="section-header fade-in-up">
+                <h3 class="section-title">Product Catalog</h3>
+            </div>
+
+            <!-- Category Filters -->
+            <div class="product-filters fade-in-up" style="animation-delay: 0.1s;">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="radiance">Radiance</button>
+                <button class="filter-btn" data-filter="hydration">Hydration</button>
+                <button class="filter-btn" data-filter="repair">Repair</button>
+            </div>
+
+            <div class="products-grid fade-in-up" id="products-grid" style="animation-delay: 0.2s">
+                <!-- Products will be loaded dynamically -->
+            </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Component -->
+    <app-footer></app-footer>
+
+    <!-- Components and App Logic -->
+    <script src="components/header.js"></script>
+    <script src="components/footer.js"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

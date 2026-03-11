@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>About - Atsupi's Cosmetics Trading</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#E6CEB8">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Leckerli+One&display=swap"
+        rel="stylesheet">
+
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0&display=swap"
+        rel="stylesheet" />
+
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        main {
+            min-height: 80vh;
+            padding: var(--space-xl) var(--space-md);
+        }
+
+        .about-content {
+            background-color: var(--clr-bg-light);
+            padding: var(--space-xl);
+            border-radius: var(--radius-xl);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-title {
+            font-size: 2rem;
+            color: var(--clr-primary);
+            margin-bottom: var(--space-md);
+        }
+
+        .about-text {
+            color: var(--clr-text-main);
+            line-height: 1.6;
+            margin-bottom: var(--space-md);
+        }
+    </style>
+</head>
+
+<body class="theme-light">
+    <!-- Header Component -->
+    <app-header></app-header>
+
+    <main>
+        <section class="about-content fade-in-up">
+            <h2 class="about-title">Our Story</h2>
+            <p class="about-text">
+                Welcome to Atsupi's Cosmetics Trading, your premium destination for the finest cosmetic products in
+                Accra. Founded by Gifty Atsupi, our core mission is to bring high-quality, authentic beauty products
+                directly to our community.
+            </p>
+            <p class="about-text">
+                We believe that radiance shouldn't be a luxury—it should be an everyday experience. Every product on our
+                shelves is meticulously selected for its quality, authenticity, and ability to elevate your natural
+                glow.
+            </p>
+        </section>
+    </main>
+
+    <!-- Footer Component -->
+    <app-footer></app-footer>
+
+    <!-- Components and App Logic -->
+    <script src="components/header.js"></script>
+    <script src="components/footer.js"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

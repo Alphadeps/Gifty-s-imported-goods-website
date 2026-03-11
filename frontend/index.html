@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gifty - Premium Imported Goods</title>
+
+    <!-- PWA Setup -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#F5F2EE">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Leckerli+One&display=swap"
+        rel="stylesheet">
+
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0&display=swap"
+        rel="stylesheet" />
+
+    <!-- FontAwesome for Social Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="theme-light">
+    <!-- Header Component -->
+    <app-header></app-header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content-wrapper fade-in-up">
+
+                <!-- Floating Elements -->
+                <div class="floating-scene">
+                    <!-- Minimal CSS geometric props -->
+                    <div class="prop-circle float-slow"></div>
+                    <div class="prop-sparkle float-fast">
+                        <span class="material-symbols-outlined">temp_preferences_custom</span>
+                    </div>
+
+                    <img src="mobile hero prod.png" alt="Featured product" class="hero-product float-main">
+                    <img src="leaf 1.png" alt="" class="leaf leaf-center-right blur-effect float-fast">
+
+                    <!-- SVG for realistic shadow overlay (simulating the palm tree shadow) -->
+                    <div class="palm-shadow"></div>
+                </div>
+
+                <div class="text-content">
+                    <h2 class="hero-title fade-in-up" style="animation-delay: 0.2s">
+                        Radiance Refined. <br><i>Beauty Redefined.</i>
+                    </h2>
+
+                    <p class="hero-subtitle fade-in-up" style="animation-delay: 0.3s">
+                        Discover Atsupi's exclusive collection of premium cosmetic products, meticulously selected to
+                        elevate your natural glow.
+                    </p>
+
+                    <button class="primary-btn dark-btn fade-in-up" style="animation-delay: 0.4s"
+                        onclick="window.location.href='products.html'">
+                        <span class="btn-text">EXPLORE THE SHOP</span>
+                        <div class="btn-icon-circle">
+                            <span class="material-symbols-outlined icon-arrow">arrow_outward</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Preview Section -->
+        <section class="products-section pb-2xl">
+            <div class="section-header fade-in-up">
+                <h3 class="section-title">Featured Essentials</h3>
+            </div>
+
+            <div class="product-gallery no-scrollbar fade-in-up" id="featured-gallery" style="animation-delay: 0.2s">
+                <!-- Products will be loaded dynamically -->
+            </div>
+
+            <div class="explore-more-container fade-in-up"
+                style="animation-delay: 0.3s; padding: var(--space-xl) var(--space-md); text-align: center;">
+                <button class="submit-btn" style="width: 100%; max-width: 300px;"
+                    onclick="window.location.href='products.html'">
+                    Discover More Arrivals
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Component -->
+    <app-footer></app-footer>
+
+    <!-- Components and App Logic -->
+    <script src="components/header.js"></script>
+    <script src="components/footer.js"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
