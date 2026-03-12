@@ -20,16 +20,16 @@ class AppFooter extends HTMLElement {
                                 <li><a href="products.html">Products</a></li>
                                 <li><a href="about.html">About Us</a></li>
                                 <li><a href="contact.html">Contact Us</a></li>
+                                <li><a href="privacy-policy.html">Privacy Policy</a></li>
                             </ul>
                         </div>
 
-                        <!-- Column 2: Connect With Us -->
                         <div class="footer-column">
                             <h4 class="footer-col-heading">Connect With Us</h4>
                             <ul class="footer-list">
                                 <li><a href="contact.html">Visit Our Store</a></li>
-                                <li><a href="https://wa.me/233595812257" target="_blank">WhatsApp Us</a></li>
-                                <li><a href="tel:0595812257">Call Us</a></li>
+                                <li><a href="https://wa.me/233244304354" target="_blank">WhatsApp Us</a></li>
+                                <li><a href="tel:0244304354">Call Us</a></li>
                             </ul>
                         </div>
                     </div>
@@ -48,9 +48,12 @@ class AppFooter extends HTMLElement {
                         </p>
 
                         <!-- Floating Chat Button Placeholder (From Image) -->
-                        <button class="chat-fab" aria-label="Open Chat">
-                            <span class="material-symbols-outlined">chat_bubble</span>
-                        </button>
+                        <a href="contact.html" class="footer-cta primary-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            Message Us
+                        </a>
                     </div>
                 </div>
             </footer>

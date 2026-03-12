@@ -4,7 +4,7 @@ const { expressjwt: jwt } = require('express-jwt');
 // Supabase signs tokens with a single symmetric secret key
 const SUPABASE_JWT_SECRET = process.env.SUPABASE_JWT_SECRET;
 const OWNER_EMAIL = process.env.OWNER_EMAIL || 'amagimpa@gmail.com';
-const OWNER_PHONE = process.env.OWNER_PHONE || '233595812257';
+const OWNER_PHONE = process.env.OWNER_PHONE || '233244304354';
 
 if (!SUPABASE_JWT_SECRET) {
     console.error("FATAL ERROR: SUPABASE_JWT_SECRET missing in .env");

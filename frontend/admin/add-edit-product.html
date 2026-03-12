@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Gifty's Admin - Product Details</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2D3B2D",
+                        "background-light": "#F5F2EE",
+                        "background-dark": "#112111",
+                        "surface": "#ffffff",
+                        "surface-dark": "#1a261a",
+                        "text-main": "#1A1412",
+                        "text-main-dark": "#f5f2ee",
+                        "muted": "#8A837E",
+                        "muted-dark": "#a39b95",
+                        "accent": "#ec5b13",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.375rem",
+                        "input": "6px",
+                        "btn": "12px",
+                        "card": "16px",
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined' !important;
+            font-feature-settings: 'liga';
+            -webkit-font-feature-settings: 'liga';
+        }
+        ::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-main dark:text-text-main-dark antialiased min-h-screen flex justify-center pb-24">
+    <div class="w-full max-w-4xl bg-background-light dark:bg-background-dark flex flex-col relative px-4 sm:px-8">
+        
+        <!-- Header -->
+        <header class="flex items-center gap-4 py-8 sticky top-0 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md z-20">
+            <a href="products.html" class="w-10 h-10 rounded-full flex items-center justify-center bg-surface dark:bg-surface-dark shadow-sm border border-muted/20 active:bg-muted/20">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-text-main dark:text-text-main-dark">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+            </a>
+            <h1 class="font-serif text-3xl font-semibold" id="page-title">Add Product</h1>
+        </header>
+
+        <!-- Form Content -->
+        <main class="flex-1">
+            <form id="product-form" class="space-y-8 mt-4 grid grid-cols-1 lg:grid-cols-3 gap-8 pb-32">
+                
+                <!-- Left Column: Media -->
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="bg-surface dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-muted/10 space-y-4">
+                        <h3 class="font-serif text-lg font-bold italic border-b border-muted/10 pb-2">Media</h3>
+                        
+                        <div class="space-y-4">
+                            <label class="text-xs font-bold text-muted uppercase tracking-widest">Product Images</label>
+                            
+                            <!-- Image Previews Container -->
+                            <div id="image-previews" class="grid grid-cols-2 gap-3">
+                                <!-- Previews will be rendered here -->
+                                <button type="button" onclick="document.getElementById('file-upload').click()" 
+                                        class="aspect-square rounded-xl border-2 border-dashed border-muted/20 flex flex-col items-center justify-center gap-2 hover:border-primary/50 hover:bg-primary/5 transition-all group">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted group-hover:text-primary">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                        <polyline points="21 15 16 10 5 21"></polyline>
+                                    </svg>
+                                    <span class="text-[10px] font-bold text-muted uppercase tracking-tighter">Add Photo</span>
+                                </button>
+                            </div>
+
+                            <input type="file" id="file-upload" class="hidden" accept="image/*" multiple onchange="handleFileUpload(this)">
+                            <p class="text-[10px] text-muted italic">Click to upload or drag & drop. First image is primary.</p>
+                        </div>
+                    </div>
+
+                    <!-- Toggles Section -->
+                    <div class="bg-surface dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-muted/10 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-bold">Available</p>
+                                <p class="text-[10px] text-muted uppercase font-bold tracking-tighter">On Storefront</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="available" checked class="sr-only peer">
+                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                            </label>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-bold">Featured</p>
+                                <p class="text-[10px] text-muted uppercase font-bold tracking-tighter">Homepage Hero</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="is_featured" class="sr-only peer">
+                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Product Details -->
+                <div class="lg:col-span-2 space-y-8">
+                    <div class="bg-surface dark:bg-surface-dark p-8 rounded-2xl shadow-sm border border-muted/10">
+                        <h3 class="font-serif text-xl font-bold italic mb-6 border-b border-muted/10 pb-4">Product Details</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="md:col-span-2 space-y-2">
+                                <label for="name" class="text-xs font-bold text-muted uppercase tracking-widest">Product Name*</label>
+                                <input type="text" id="name" required placeholder="Display name of the product" 
+                                       class="w-full h-14 px-5 rounded-xl border border-muted/30 dark:bg-background-dark focus:ring-2 focus:ring-primary/20 focus:border-primary font-medium text-lg">
+                            </div>
+
+                            <div class="space-y-2">
+                                <label for="category_id" class="text-xs font-bold text-muted uppercase tracking-widest">Category</label>
+                                <div class="relative">
+                                    <select id="category_id" class="w-full h-14 px-5 rounded-xl border border-muted/30 dark:bg-background-dark focus:ring-2 focus:ring-primary/20 focus:border-primary appearance-none font-medium text-sm">
+                                        <option value="">Select a category</option>
+                                    </select>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label for="quantity" class="text-xs font-bold text-muted uppercase tracking-widest">Stock Units</label>
+                                <input type="number" id="quantity" value="0" 
+                                       class="w-full h-14 px-5 rounded-xl border border-muted/30 dark:bg-background-dark focus:ring-2 focus:ring-primary/20 focus:border-primary font-medium text-sm">
+                            </div>
+
+                            <div class="space-y-2">
+                                <label for="current_price" class="text-xs font-bold text-muted uppercase tracking-widest">Regular Price (₵)*</label>
+                                <input type="number" id="current_price" required step="0.01" placeholder="0.00" 
+                                       class="w-full h-14 px-5 rounded-xl border border-muted/30 dark:bg-background-dark focus:ring-2 focus:ring-primary/20 focus:border-primary font-bold text-xl text-primary">
+                            </div>
+
+                            <div class="space-y-2">
+                                <label for="new_price" class="text-xs font-bold text-muted uppercase tracking-widest">Sale Price (₵) - Optional</label>
+                                <input type="number" id="new_price" step="0.01" placeholder="0.00" 
+                                       class="w-full h-14 px-5 rounded-xl border border-muted/30 dark:bg-background-dark focus:ring-2 focus:ring-accent/20 focus:border-accent font-bold text-xl text-accent">
+                            </div>
+
+                            <div class="md:col-span-2 space-y-2">
+                                <label for="description" class="text-xs font-bold text-muted uppercase tracking-widest">Details</label>
+                                <textarea id="description" placeholder="Describe the texture, fragrance, results..." 
+                                          class="w-full h-32 p-5 rounded-xl border border-muted/30 dark:bg-background-dark focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm transition-all"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Attributes Section -->
+                        <div class="mt-8 border-t border-muted/10 pt-6 space-y-6">
+                            <h4 class="text-xs font-bold text-muted uppercase tracking-widest">Attributes & Specifications</h4>
+                            
+                            <div class="space-y-4">
+                                <!-- Colors -->
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-semibold opacity-70">Colors</span>
+                                        <button type="button" onclick="addAttribute('Colors')" class="text-[10px] bg-primary text-white px-2 py-1 rounded-md font-bold hover:bg-primary/90 transition-colors">ADD COLOR</button>
+                                    </div>
+                                    <div id="attr-Colors" class="flex flex-wrap gap-2 min-h-[1.5rem]"></div>
+                                </div>
+
+                                <!-- Sizes -->
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-semibold opacity-70">Sizes</span>
+                                        <button type="button" onclick="addAttribute('Sizes')" class="text-[10px] bg-primary text-white px-2 py-1 rounded-md font-bold hover:bg-primary/90 transition-colors">ADD SIZE</button>
+                                    </div>
+                                    <div id="attr-Sizes" class="flex flex-wrap gap-2 min-h-[1.5rem]"></div>
+                                </div>
+
+                                <!-- Brand -->
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-semibold opacity-70">Brand</span>
+                                        <button type="button" onclick="addAttribute('Brand')" class="text-[10px] bg-primary text-white px-2 py-1 rounded-md font-bold hover:bg-primary/90 transition-colors">SET BRAND</button>
+                                    </div>
+                                    <div id="attr-Brand" class="flex flex-wrap gap-2 min-h-[1.5rem]"></div>
+                                </div>
+
+                                <!-- Other -->
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-semibold opacity-70">Other Details</span>
+                                        <button type="button" onclick="addAttribute('Other')" class="text-[10px] bg-primary text-white px-2 py-1 rounded-md font-bold hover:bg-primary/90 transition-colors">ADD DETAIL</button>
+                                    </div>
+                                    <div id="attr-Other" class="flex flex-wrap gap-4 min-h-[1.5rem]"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </main>
+>
+            </form>
+        </main>
+
+        <!-- Fixed Bottom Action Bar -->
+        <div class="fixed md:absolute bottom-0 left-0 right-0 p-6 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-t border-muted/10 z-30 flex justify-end">
+            <button type="submit" form="product-form" id="save-btn" 
+                    class="w-full md:w-auto md:px-12 h-14 bg-primary text-white rounded-xl font-bold flex items-center justify-center gap-3 shadow-xl hover:shadow-primary/30 active:scale-[0.98] transition-all">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                    <polyline points="7 3 7 8 15 8"></polyline>
+                </svg>
+                <span id="save-btn-text">Save Changes</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../config.js"></script>
+    <script src="admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await auth.init();
+            initPage();
+        });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        async function initPage() {
+            await fetchCategories();
+            if (productId) {
+                document.getElementById('page-title').innerText = 'Edit Product';
+                await fetchProductDetails();
+            }
+        }
+
+        async function fetchCategories() {
+            const select = document.getElementById('category_id');
+            try {
+                // We use the public categories endpoint to populate the dropdown
+                const response = await fetch(`${window.CONFIG.Backend_URL}/api/v1/public/categories`);
+                const categories = await response.json();
+                categories.forEach(cat => {
+                    const opt = document.createElement('option');
+                    opt.value = cat.id;
+                    opt.innerText = cat.name;
+                    select.appendChild(opt);
+                });
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        }
+
+        async function fetchProductDetails() {
+            try {
+                const response = await adminFetch('/products');
+                const products = await response.json();
+                const product = products.find(p => p.id === productId);
+                
+                if (product) {
+                    document.getElementById('name').value = product.name;
+                    document.getElementById('current_price').value = product.current_price;
+                    document.getElementById('new_price').value = product.new_price || '';
+                    document.getElementById('quantity').value = product.quantity || 0;
+                    document.getElementById('category_id').value = product.category_id || '';
+                    document.getElementById('available').checked = product.available;
+                    document.getElementById('is_featured').checked = product.is_featured || false;
+                    document.getElementById('description').value = product.description || '';
+                    
+                    // Populate Image Previews
+                    if (product.image_urls) {
+                        product.image_urls.forEach(url => renderImagePreview(url, product.blurhash));
+                    }
+                    
+                    // Populate Attributes Tags
+                    if (product.attributes) {
+                        Object.entries(product.attributes).forEach(([key, value]) => {
+                            const values = Array.isArray(value) ? value : [value];
+                            const containerId = ['Colors', 'Sizes', 'Brand'].includes(key) ? `attr-${key}` : 'attr-Other';
+                            values.forEach(val => renderTag(containerId, val, key === 'Other' ? key : null));
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Failed to load product details', 'error');
+            }
+        }
+
+        // --- Dynamic Attributes UI Helpers ---
+        function addAttribute(type) {
+            const container = document.getElementById(`attr-${type}`);
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = type === 'Other' ? 'Key: Value' : 'Value...';
+            input.className = 'text-xs px-3 py-1.5 rounded-lg border border-muted/30 dark:bg-background-dark focus:ring-2 focus:ring-primary/20 w-32';
+            
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const val = input.value.trim();
+                    if (val) {
+                        if (type === 'Other' && !val.includes(':')) {
+                            showToast('Use Format Key: Value', 'error');
+                            return;
+                        }
+                        renderTag(`attr-${type}`, val, type === 'Other' ? 'Other' : null);
+                        input.remove();
+                    }
+                }
+                if (e.key === 'Escape') input.remove();
+            });
+
+            container.appendChild(input);
+            input.focus();
+        }
+
+        function renderTag(containerId, value, isOther) {
+            const container = document.getElementById(containerId);
+            const tag = document.createElement('div');
+            tag.className = 'inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-semibold group transition-all hover:bg-slate-200 dark:hover:bg-slate-700';
+            tag.dataset.value = value;
+            if (isOther) tag.dataset.type = 'other';
+
+            tag.innerHTML = `
+                <span>${value}</span>
+                <button type="button" onclick="this.parentElement.remove()" class="text-muted hover:text-red-500 transition-colors">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            `;
+            container.appendChild(tag);
+        }
+
+        // --- Image Upload Helpers ---
+        let uploadedImages = [];
+
+        async function handleFileUpload(input) {
+            const files = Array.from(input.files);
+            if (files.length === 0) return;
+
+            for (const file of files) {
+                const formData = new FormData();
+                formData.append('image', file);
+
+                try {
+                    // Show a local preview placeholder (optional, but good for UX)
+                    // For now, let's just upload and show real preview
+                    const response = await adminFetch('/upload-image', {
+                        method: 'POST',
+                        body: formData,
+                        // Note: adminFetch handles Authorization. 
+                        // But we must NOT set Content-Type: application/json here.
+                        // adminFetch needs to be smart enough or we fetch manually.
+                    }, true); // Adding a 'isMultipart' flag to our fetch helper
+
+                    const result = await response.json();
+                    if (result.url) {
+                        renderImagePreview(result.url, result.blurhash);
+                    }
+                } catch (error) {
+                    console.error('File Upload Error:', error);
+                    showToast('Failed to upload image', 'error');
+                }
+            }
+            input.value = ''; // Reset input
+        }
+
+        function renderImagePreview(url, blurhash = null) {
+            const container = document.getElementById('image-previews');
+            const addButton = container.querySelector('button');
+            
+            const div = document.createElement('div');
+            div.className = 'relative aspect-square rounded-xl overflow-hidden shadow-sm group';
+            div.dataset.url = url;
+            if (blurhash) div.dataset.blurhash = blurhash;
+            div.innerHTML = `
+                <img src="${url}" class="w-full h-full object-cover">
+                <button type="button" onclick="this.parentElement.remove()" 
+                        class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            `;
+            container.insertBefore(div, addButton);
+        }
+
+        document.getElementById('product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const saveBtn = document.getElementById('save-btn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Saving...';
+
+            // Gather attributes from tags
+            const attributes = {};
+            ['Colors', 'Sizes', 'Brand'].forEach(type => {
+                const tags = Array.from(document.querySelectorAll(`#attr-${type} [data-value]`));
+                if (tags.length > 0) {
+                    attributes[type] = tags.map(t => t.dataset.value);
+                    if (type === 'Brand') attributes[type] = attributes[type][0]; // Brand usually singular
+                }
+            });
+
+            // Gather 'Other' tags
+            const otherTags = Array.from(document.querySelectorAll('#attr-Other [data-value]'));
+            otherTags.forEach(t => {
+                const [key, val] = t.dataset.value.split(':').map(s => s.trim());
+                if (key && val) attributes[key] = val;
+            });
+
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                current_price: parseFloat(document.getElementById('current_price').value),
+                new_price: document.getElementById('new_price').value ? parseFloat(document.getElementById('new_price').value) : null,
+                quantity: parseInt(document.getElementById('quantity').value) || 0,
+                category_id: document.getElementById('category_id').value || null,
+                available: document.getElementById('available').checked,
+                is_featured: document.getElementById('is_featured').checked,
+                description: document.getElementById('description').value.trim() || null,
+                image_urls: Array.from(document.querySelectorAll('#image-previews [data-url]')).map(el => el.dataset.url),
+                blurhash: document.querySelector('#image-previews [data-blurhash]')?.dataset.blurhash || null,
+                attributes: attributes
+            };
+
+            if (productId) formData.id = productId;
+
+            try {
+                const response = await adminFetch('/products', {
+                    method: productId ? 'PUT' : 'POST',
+                    body: JSON.stringify(formData)
+                });
+
+                if (response && response.ok) {
+                    showToast(productId ? 'Product updated!' : 'Product created!');
+                    setTimeout(() => window.location.href = 'products.html', 1000);
+                } else {
+                    const error = await response.json();
+                    showToast(error.error || 'Failed to save', 'error');
+                }
+            } catch (error) {
+                showToast('Connection error', 'error');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> Save Product';
+            }
+        });
+
+        // Initialize call moved to listener above
+    </script>
+</body>
+</html>
