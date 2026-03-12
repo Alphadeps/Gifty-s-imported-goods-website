@@ -135,7 +135,7 @@ const productController = {
 
     // PUT /api/v1/admin/products
     updateProduct: async (req, res) => {
-        const { id, name, current_price, available, new_price, description, category_id, quantity, image_urls, attributes, is_featured } = req.body;
+        const { id, name, current_price, available, new_price, description, category_id, quantity, image_urls, attributes, is_featured, blurhash } = req.body;
 
         if (!id) {
             return res.status(400).json({ error: 'Product ID is required for update' });
