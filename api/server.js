@@ -68,13 +68,16 @@ app.get('/keep-alive', (req, res) => {
 });
 
 
+// Obfuscation Middleware (Applies to all protected and public API responses)
+const { obfuscateResponse } = require('./src/middleware/obfuscation');
+app.use('/api/v1', obfuscateResponse);
+
 // Public routes (Unsecured)
 app.use('/api/v1/public', publicRoutes);
 
 // Admin routes (Secured - restricted to owner only via Supabase Auth)
 const { verifyAdminJWT, restrictToOwner } = require('./src/middleware/auth');
-const { obfuscateResponse } = require('./src/middleware/obfuscation');
-app.use('/api/v1/admin', verifyAdminJWT, restrictToOwner, obfuscateResponse, adminRoutes);
+app.use('/api/v1/admin', verifyAdminJWT, restrictToOwner, adminRoutes);
 
 // Error handling middleware for express-jwt
 app.use((err, req, res, next) => {
