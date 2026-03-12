@@ -1,20 +1,20 @@
 const { expressjwt: jwt } = require('express-jwt');
+const jwksRsa = require('jwks-rsa');
 
 // Configuration
-// Supabase signs tokens with a single symmetric secret key
-const SUPABASE_JWT_SECRET = process.env.SUPABASE_JWT_SECRET;
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://zwubakrzjgptslrypqli.supabase.co';
 const OWNER_EMAIL = process.env.OWNER_EMAIL || 'amagimpa@gmail.com';
 const OWNER_PHONE = process.env.OWNER_PHONE || '233244304354';
 
-if (!SUPABASE_JWT_SECRET) {
-    console.error("FATAL ERROR: SUPABASE_JWT_SECRET missing in .env");
-    process.exit(1);
-}
-
-// Authentication middleware using Supabase
+// Authentication middleware using Supabase JWKS for ES256 verification
 const verifyAdminJWT = jwt({
-    secret: SUPABASE_JWT_SECRET,
-    algorithms: ['HS256']
+    secret: jwksRsa.expressJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: `${SUPABASE_URL}/auth/v1/.well-known/jwks.json`
+    }),
+    algorithms: ['RS256', 'ES256']
 });
 
 // Authorization middleware to restrict to owner only
