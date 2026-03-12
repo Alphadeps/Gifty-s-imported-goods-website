@@ -73,7 +73,8 @@ app.use('/api/v1/public', publicRoutes);
 
 // Admin routes (Secured - restricted to owner only via Supabase Auth)
 const { verifyAdminJWT, restrictToOwner } = require('./src/middleware/auth');
-app.use('/api/v1/admin', verifyAdminJWT, restrictToOwner, adminRoutes);
+const { obfuscateResponse } = require('./src/middleware/obfuscation');
+app.use('/api/v1/admin', verifyAdminJWT, restrictToOwner, obfuscateResponse, adminRoutes);
 
 // Error handling middleware for express-jwt
 app.use((err, req, res, next) => {
