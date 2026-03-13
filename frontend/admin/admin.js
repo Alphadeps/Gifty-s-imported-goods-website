@@ -8,15 +8,15 @@ const API_BASE_URL = window.CONFIG?.Backend_URL || 'http://localhost:8080';
 const ADMIN_API_URL = `${API_BASE_URL}/api/v1/admin`;
 
 // --- Supabase Configuration ---
-let supabase = null;
+let supabaseClient = null;
 
 const initSupabase = () => {
-    // Note: In production, these should ideally come from a secure config or env
-    const supabaseUrl = "https://zwubakrzjgptslrypqli.supabase.co";
-    const supabaseKey = "YOUR_SUPABASE_ANON_KEY"; // Placeholder - User needs to provide this
+    // Pull configuration from config.js
+    const supabaseUrl = window.CONFIG?.SUPABASE_URL;
+    const supabaseKey = window.CONFIG?.SUPABASE_KEY;
     
-    if (window.supabase) {
-        supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    if (window.supabase && supabaseUrl && supabaseKey) {
+        supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
     }
 };
 
@@ -34,23 +34,35 @@ const auth = {
 
     // Check if user is authenticated
     isAuthenticated: async () => {
-        if (!supabase) initSupabase();
-        if (!supabase) return false;
+        if (!supabaseClient) initSupabase();
+        if (!supabaseClient) return false;
         
-        const { data: { session } } = await supabase.auth.getSession();
-        return !!session;
+        try {
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
+            if (error) throw error;
+            
+            // If session exists, ensure local user state is also present
+            if (session && !localStorage.getItem('admin_user')) {
+                localStorage.setItem('admin_user', JSON.stringify(session.user));
+            }
+            
+            return !!session;
+        } catch (e) {
+            console.error("Auth check failed:", e);
+            return false;
+        }
     },
 
     // Login with Supabase (Email/Password)
     login: async (email, password) => {
-        if (!supabase) initSupabase();
+        if (!supabaseClient) initSupabase();
         
         // Strict frontend check for owner email
         if (email !== "amagimpa@gmail.com") {
             throw new Error("Access Denied: Non-owner account.");
         }
 
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
             email,
             password
         });
@@ -63,8 +75,8 @@ const auth = {
     },
 
     logout: async () => {
-        if (!supabase) initSupabase();
-        await supabase.auth.signOut();
+        if (!supabaseClient) initSupabase();
+        await supabaseClient.auth.signOut();
         localStorage.removeItem('admin_user');
         window.location.href = 'login.html';
     },
@@ -88,9 +100,9 @@ const auth = {
     },
 
     getAuthHeader: async () => {
-        if (!supabase) initSupabase();
+        if (!supabaseClient) initSupabase();
         try {
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await supabaseClient.auth.getSession();
             return session ? { 'Authorization': `Bearer ${session.access_token}` } : {};
         } catch (e) {
             console.error("Failed to get session:", e);
@@ -102,7 +114,7 @@ const auth = {
 
     // 1. Request Phone OTP
     loginWithPhone: async (phone) => {
-        if (!supabase) initSupabase();
+        if (!supabaseClient) initSupabase();
 
         // Security check - normalize phone to compare
         const normalizedPhone = phone.replace(/\+/g, '');
@@ -110,7 +122,7 @@ const auth = {
             throw new Error("Access Denied: Non-owner phone number.");
         }
 
-        const { error } = await supabase.auth.signInWithOtp({
+        const { error } = await supabaseClient.auth.signInWithOtp({
             phone: `+${normalizedPhone}`
         });
 
@@ -120,10 +132,10 @@ const auth = {
 
     // 2. Verify Phone OTP
     verifyPhoneOTP: async (phone, token) => {
-        if (!supabase) initSupabase();
+        if (!supabaseClient) initSupabase();
         
         const normalizedPhone = phone.replace(/\+/g, '');
-        const { data, error } = await supabase.auth.verifyOtp({
+        const { data, error } = await supabaseClient.auth.verifyOtp({
             phone: `+${normalizedPhone}`,
             token,
             type: 'sms'
@@ -139,23 +151,23 @@ const auth = {
     
     // 1. Request OTP email
     requestPasswordReset: async (email) => {
-        if (!supabase) initSupabase();
+        if (!supabaseClient) initSupabase();
         
         // Security check
         if (email !== "amagimpa@gmail.com") {
             throw new Error("Invalid request. Access Restricted.");
         }
 
-        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
         if (error) throw error;
         return true;
     },
 
     // 2. Verify OTP code
     verifyResetOTP: async (email, token) => {
-        if (!supabase) initSupabase();
+        if (!supabaseClient) initSupabase();
         
-        const { data, error } = await supabase.auth.verifyOtp({
+        const { data, error } = await supabaseClient.auth.verifyOtp({
             email,
             token,
             type: 'recovery'
@@ -167,9 +179,9 @@ const auth = {
 
     // 3. Update password (session is already created/active after OTP verification)
     updateUserPassword: async (newPassword) => {
-        if (!supabase) initSupabase();
+        if (!supabaseClient) initSupabase();
         
-        const { error } = await supabase.auth.updateUser({
+        const { error } = await supabaseClient.auth.updateUser({
             password: newPassword
         });
 
@@ -203,10 +215,34 @@ async function adminFetch(endpoint, options = {}) {
                 ...options.headers
             }
         });
+
         if (response.status === 401) {
             auth.logout();
             return null;
         }
+
+        // --- Response Obfuscation Layer ---
+        const originalJson = response.json.bind(response);
+        response.json = async () => {
+            const data = await originalJson();
+            if (data && data._d && typeof data._d === 'string') {
+                try {
+                    // Robust UTF-8 Base64 decoding
+                    const decodedString = decodeURIComponent(escape(atob(data._d)));
+                    return JSON.parse(decodedString);
+                } catch (e) {
+                    try {
+                        // Fallback to standard atob if decoding fails (for simple ASCII)
+                        return JSON.parse(atob(data._d));
+                    } catch (e2) {
+                        console.error("De-obfuscation failed:", e2);
+                        return data;
+                    }
+                }
+            }
+            return data;
+        };
+
         return response;
     } catch (error) {
         console.error('API Fetch Error:', error);

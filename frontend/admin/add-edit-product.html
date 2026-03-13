@@ -256,8 +256,8 @@
         async function fetchCategories() {
             const select = document.getElementById('category_id');
             try {
-                // We use the public categories endpoint to populate the dropdown
-                const response = await fetch(`${window.CONFIG.Backend_URL}/api/v1/public/categories`);
+                // Use adminFetch (public path) to benefit from automatic de-obfuscation
+                const response = await adminFetch('/public/categories');
                 const categories = await response.json();
                 categories.forEach(cat => {
                     const opt = document.createElement('option');
@@ -337,14 +337,16 @@
         function renderTag(containerId, value, isOther) {
             const container = document.getElementById(containerId);
             const tag = document.createElement('div');
-            tag.className = 'inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-semibold group transition-all hover:bg-slate-200 dark:hover:bg-slate-700';
+            tag.className = 'inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-semibold group transition-all hover:bg-slate-200 dark:hover:bg-slate-700 border border-transparent hover:border-red-200 dark:hover:border-red-900/30';
             tag.dataset.value = value;
             if (isOther) tag.dataset.type = 'other';
 
             tag.innerHTML = `
-                <span>${value}</span>
-                <button type="button" onclick="this.parentElement.remove()" class="text-muted hover:text-red-500 transition-colors">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <span class="opacity-90">${value}</span>
+                <button type="button" onclick="this.parentElement.remove()" 
+                        class="flex items-center justify-center p-1 rounded-md text-muted hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all"
+                        title="Delete attribute">
+                    <span class="material-symbols-outlined !text-[14px]">delete</span>
                 </button>
             `;
             container.appendChild(tag);

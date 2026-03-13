@@ -272,10 +272,11 @@
 
                 try {
                     await auth.login(email, password);
+                    showToast("Login successful! Redirecting...");
+                    setTimeout(() => window.location.href = 'products.html', 1500);
                 } catch (error) {
                     errorMsg.innerText = error.message.includes("Non-owner") ? "Access Restricted" : "Invalid credentials.";
                     errorMsg.classList.remove('hidden');
-                } finally {
                     setBtnLoading(btn, false);
                 }
             });
@@ -388,11 +389,11 @@
 
                 try {
                     await auth.verifyPhoneOTP(tempPhone, code);
-                    window.location.href = 'products.html';
+                    showToast("Login successful! Redirecting...");
+                    setTimeout(() => window.location.href = 'products.html', 1500);
                 } catch (error) {
                     errorMsg.innerText = "Invalid or expired code.";
                     errorMsg.classList.remove('hidden');
-                } finally {
                     setBtnLoading(btn, false);
                 }
             });

@@ -1696,6 +1696,68 @@ h6 {
     }
 }
 
+/* --- Brand Clientele Section --- */
+.brand-clientele-section {
+    position: relative;
+    overflow: hidden;
+    padding-top: var(--space-xl);
+}
+
+.brand-scroller-container {
+    mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    overflow: hidden;
+    padding: var(--space-md) 0;
+}
+
+.brand-scroller-track {
+    display: flex;
+    width: max-content;
+    gap: var(--space-2xl);
+    animation: scroll-left 40s linear infinite;
+}
+
+.brand-scroller-track:hover {
+    animation-play-state: paused;
+}
+
+.brand-item {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--clr-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+    opacity: 0.6;
+    transition: opacity 0.3s ease, color 0.3s ease;
+    cursor: default;
+}
+
+.brand-item:hover {
+    opacity: 1;
+    color: var(--clr-primary);
+}
+
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+@media (max-width: 768px) {
+    .brand-item {
+        font-size: 1.2rem;
+    }
+    .brand-scroller-track {
+        gap: var(--space-xl);
+        animation-duration: 30s;
+    }
+}
+
 /* ===== MOBILE MENU OVERLAY ===== */
 .mobile-menu-overlay {
     position: fixed;
