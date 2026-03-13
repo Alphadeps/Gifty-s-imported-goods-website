@@ -28,8 +28,8 @@ class AppFooter extends HTMLElement {
                             <h4 class="footer-col-heading">Connect With Us</h4>
                             <ul class="footer-list">
                                 <li><a href="contact.html">Visit Our Store</a></li>
-                                <li><a href="https://wa.me/233244304354" target="_blank">WhatsApp Us</a></li>
-                                <li><a href="tel:0244304354">Call Us</a></li>
+                                <li><a href="https://wa.me/${window.CONFIG?.WHATSAPP_NUMBER || ''}" target="_blank">WhatsApp Us</a></li>
+                                <li><a href="tel:${window.CONFIG?.OWNER_PHONE || ''}">Call Us</a></li>
                             </ul>
                         </div>
                     </div>

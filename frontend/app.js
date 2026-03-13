@@ -323,7 +323,8 @@ async function loadProductDetails() {
         const waBtn = document.getElementById('buy-whatsapp-btn');
         if (waBtn) {
             const message = encodeURIComponent(`Hello Atsupi's, I am interested in purchasing the ${product.name} (₵${product.current_price}). Is it available?`);
-            waBtn.href = `https://wa.me/233244304354?text=${message}`;
+            const phone = window.CONFIG?.WHATSAPP_NUMBER || '';
+            waBtn.href = `https://wa.me/${phone}?text=${message}`;
         }
 
         // Set Dynamic Page Title

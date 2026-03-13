@@ -128,7 +128,7 @@
             <div class="policy-section">
                 <h3>Contact Us</h3>
                 <p class="policy-text">
-                    If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us at 0244304354.
+                    If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us at <span id="dynamic-privacy-phone">0244304354</span>.
                 </p>
             </div>
         </section>
@@ -142,6 +142,14 @@
     <script src="components/footer.js"></script>
     <script src="config.js"></script>
     <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.CONFIG) {
+                const phoneEl = document.getElementById('dynamic-privacy-phone');
+                if (phoneEl) phoneEl.textContent = window.CONFIG.OWNER_PHONE;
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -2,9 +2,9 @@ const { expressjwt: jwt } = require('express-jwt');
 const jwksRsa = require('jwks-rsa');
 
 // Configuration
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://zwubakrzjgptslrypqli.supabase.co';
-const OWNER_EMAIL = process.env.OWNER_EMAIL || 'admin@gifty.com';
-const OWNER_PHONE = process.env.OWNER_PHONE || '233244304354';
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const OWNER_EMAIL = process.env.OWNER_EMAIL;
+const OWNER_PHONE = process.env.OWNER_PHONE;
 
 // Authentication middleware using Supabase JWKS for ES256 verification
 const verifyAdminJWT = jwt({

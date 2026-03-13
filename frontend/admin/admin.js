@@ -16,7 +16,20 @@ const initSupabase = () => {
     const supabaseKey = window.CONFIG?.SUPABASE_KEY;
     
     if (window.supabase && supabaseUrl && supabaseKey) {
-        supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+        // AGGRESSIVE: If we just logged out, don't even let Supabase look for a session
+        const forceNoPersist = window.location.search.includes('logout=success');
+        
+        supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey, {
+            auth: {
+                persistSession: !forceNoPersist,
+                autoRefreshToken: !forceNoPersist,
+                detectSessionInUrl: !forceNoPersist
+            }
+        });
+
+        if (forceNoPersist) {
+            console.log("Admin: Session persistence disabled for this visit.");
+        }
     }
 };
 
@@ -79,20 +92,60 @@ const auth = {
         if (!supabaseClient) initSupabase();
         
         try {
-            await supabaseClient.auth.signOut();
+            // 0. Aggressive session reset
+            await supabaseClient.auth.setSession({ access_token: null, refresh_token: null });
+            await supabaseClient.auth.signOut({ scope: 'global' });
         } catch (e) {
             console.error("Logout error:", e);
         } finally {
-            localStorage.removeItem('admin_user');
-            // Clear any other possible auth-related keys
-            localStorage.removeItem('supabase.auth.token'); 
-            window.location.href = 'login.html';
+            // 1. Clear all standard storage
+            localStorage.clear(); 
+            // Also iterate and remove supabase specific keys just in case
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key?.includes('supabase')) localStorage.removeItem(key);
+            }
+            sessionStorage.clear();
+            
+            // 2. Explicitly kill cookies
+            const cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                const name = cookies[i].split("=")[0].trim();
+                if (name.startsWith('sb-') || name.includes('supabase')) {
+                    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+                    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/admin";
+                }
+            }
+
+            // 3. NUCLEAR: Clear IndexedDB (Supabase hides tokens here)
+            try {
+                const dbs = await window.indexedDB.databases();
+                for (const dbInfo of dbs) {
+                    if (dbInfo.name && (dbInfo.name.includes('supabase') || dbInfo.name.includes('firebase'))) {
+                        window.indexedDB.deleteDatabase(dbInfo.name);
+                        console.log(`Admin: Deleted database ${dbInfo.name}`);
+                    }
+                }
+            } catch (err) {
+                console.error("IndexedDB clearing failed:", err);
+            }
+
+            // 4. Final delay and redirect
+            setTimeout(() => {
+                window.location.replace('login.html?logout=success');
+            }, 500);
         }
     },
 
     // Enforce authentication on protected pages
     checkAuth: async () => {
         if (auth.isLoggingOut) return;
+        
+        // Skip check if we just logged out to prevent redirect loop
+        if (window.location.search.includes('logout=success')) {
+            console.log("Admin: Skipping auth check after logout");
+            return;
+        }
 
         // Bypass auth if in development mode
         if (window.CONFIG?.DEV_MODE) {
@@ -102,6 +155,7 @@ const auth = {
         
         const isAuth = await auth.isAuthenticated();
         const currentPath = window.location.pathname.toLowerCase();
+        console.log("Admin: Auth Check - isAuth:", isAuth, "Path:", currentPath);
         
         // Robust check for login page across different URL formats (Vercel clean URLs vs .html)
         const isLoginPage = currentPath.endsWith('login') || currentPath.endsWith('login.html');
