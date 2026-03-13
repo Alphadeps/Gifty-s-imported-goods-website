@@ -4,7 +4,15 @@ class AppFooter extends HTMLElement {
     }
 
     connectedCallback() {
+        this.render();
+        window.addEventListener('configLoaded', () => this.render());
+    }
+
+    render() {
         const currentYear = new Date().getFullYear();
+        const whatsapp = window.CONFIG?.WHATSAPP_NUMBER || '';
+        const phone = window.CONFIG?.OWNER_PHONE || '';
+
         this.innerHTML = `
             <footer class="premium-footer">
                 <div class="footer-container">
@@ -28,8 +36,8 @@ class AppFooter extends HTMLElement {
                             <h4 class="footer-col-heading">Connect With Us</h4>
                             <ul class="footer-list">
                                 <li><a href="contact.html">Visit Our Store</a></li>
-                                <li><a href="https://wa.me/${window.CONFIG?.WHATSAPP_NUMBER || ''}" target="_blank">WhatsApp Us</a></li>
-                                <li><a href="tel:${window.CONFIG?.OWNER_PHONE || ''}">Call Us</a></li>
+                                <li><a href="https://wa.me/${whatsapp}" target="_blank">WhatsApp Us</a></li>
+                                <li><a href="tel:${phone}">Call Us</a></li>
                             </ul>
                         </div>
                     </div>
@@ -47,8 +55,8 @@ class AppFooter extends HTMLElement {
                             &copy; ${currentYear} Atsupi's Cosmetics Trading. All Rights Reserved.
                         </p>
 
-                        <!-- Floating Chat Button Placeholder (From Image) -->
-                        <a href="contact.html" class="footer-cta primary-btn">
+                        <!-- Message Us Button -->
+                        <a href="https://wa.me/${whatsapp}" class="footer-cta primary-btn">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
                                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                             </svg>
@@ -57,7 +65,7 @@ class AppFooter extends HTMLElement {
                     </div>
                 </div>
             </footer>
-            <!-- FontAwesome for Social Icons (temporary CDN link inside component) -->
+            <!-- FontAwesome for Social Icons -->
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         `;
     }

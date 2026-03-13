@@ -1,0 +1,7 @@
+{
+  "name": "gifty-imported-goods",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "node inject-env.js"
+  }
+}

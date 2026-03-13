@@ -4,8 +4,37 @@
  * Handles authentication, API communication, and common UI interactions.
  */
 
-const API_BASE_URL = window.CONFIG?.Backend_URL || 'http://localhost:8080';
-const ADMIN_API_URL = `${API_BASE_URL}/api/v1/admin`;
+let API_BASE_URL = '';
+let ADMIN_API_URL = '';
+
+/**
+ * Initialize Admin Configuration Dynamically
+ */
+async function initAdminConfig() {
+    const renderUrl = 'https://gifty-s-imported-goods-website.onrender.com';
+
+    // 1. Check for build-time injection
+    if (window.CONFIG && window.CONFIG.Backend_URL && !window.CONFIG.Backend_URL.includes('PLACEHOLDER')) {
+        API_BASE_URL = window.CONFIG.Backend_URL;
+        ADMIN_API_URL = `${API_BASE_URL}/api/v1/admin`;
+        return true;
+    }
+
+    try {
+        const response = await fetch(`${renderUrl}/api/v1/public/config`);
+        const config = await response.json();
+        window.CONFIG = config;
+        
+        API_BASE_URL = config.Backend_URL || renderUrl;
+        ADMIN_API_URL = `${API_BASE_URL}/api/v1/admin`;
+        return true;
+    } catch (error) {
+        console.error('Admin Config Fallback Error:', error);
+        API_BASE_URL = renderUrl;
+        ADMIN_API_URL = `${API_BASE_URL}/api/v1/admin`;
+        return false;
+    }
+}
 
 // --- Supabase Configuration ---
 let supabaseClient = null;
@@ -38,6 +67,7 @@ const auth = {
     isLoggingOut: false,
     // Initialize Auth Client
     init: async () => {
+        await initAdminConfig();
         initSupabase();
         await auth.checkAuth();
     },

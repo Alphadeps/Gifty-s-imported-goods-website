@@ -87,13 +87,47 @@ function renderBlurhashToCanvas(canvas, blurhash) {
 
 let API_BASE_URL = '';
 
-document.addEventListener('DOMContentLoaded', () => {
-
-    // Set API_BASE_URL from config or fallback
-    const backendUrl = window.CONFIG?.Backend_URL || 'http://localhost:8080';
-    API_BASE_URL = `${backendUrl}/api/v1/public`;
+/**
+ * Initialize Application Configuration Dynamically
+ * Fetches public environment variables from the backend server.
+ */
+/**
+ * Initialize Application Configuration Dynamically
+ * Prioritizes Vercel-injected values, falls back to dynamic fetch or hardcoded Render URL.
+ */
+async function initAppConfig() {
+    const renderUrl = 'https://gifty-s-imported-goods-website.onrender.com';
     
-    console.log('API Base URL:', API_BASE_URL);
+    // 1. Check if Vercel already injected config via config.js
+    if (window.CONFIG && window.CONFIG.Backend_URL && !window.CONFIG.Backend_URL.includes('PLACEHOLDER')) {
+        API_BASE_URL = `${window.CONFIG.Backend_URL}/api/v1/public`;
+        console.log('Using pre-configured API:', API_BASE_URL);
+        window.dispatchEvent(new CustomEvent('configLoaded'));
+        return true;
+    }
+
+    // 2. Fallback: Dynamically fetch from Render
+    try {
+        console.log('Fetching config from Render...');
+        const response = await fetch(`${renderUrl}/api/v1/public/config`);
+        const config = await response.json();
+        
+        window.CONFIG = config;
+        API_BASE_URL = `${config.Backend_URL || renderUrl}/api/v1/public`;
+        
+        console.log('Dynamic configuration loaded:', API_BASE_URL);
+        window.dispatchEvent(new CustomEvent('configLoaded'));
+        return true;
+    } catch (error) {
+        console.error('Configuration fallback failed:', error);
+        API_BASE_URL = `${renderUrl}/api/v1/public`;
+        return false;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // Load config first
+    await initAppConfig();
 
     // Initialization for interactions and PWA
     // Robust path detection (handles index, index.html, /products, products.html etc)

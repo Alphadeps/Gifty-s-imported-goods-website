@@ -5,6 +5,7 @@ const rateLimit = require('express-rate-limit');
 const productController = require('../controllers/productController');
 const categoryController = require('../controllers/categoryController');
 const inquiryController = require('../controllers/inquiryController');
+const configController = require('../controllers/configController');
 
 // Super Strict Limiter specifically for contact form to prevent spam
 const inquiryLimiter = rateLimit({
@@ -23,6 +24,9 @@ router.get('/products/:slug', productController.getPublicProductBySlug);
 
 // GET /api/v1/public/categories
 router.get('/categories', categoryController.getAllCategories);
+
+// GET /api/v1/public/config
+router.get('/config', configController.getPublicConfig);
 
 // POST /api/v1/public/inquiries (Contact Form)
 router.post('/inquiries', inquiryLimiter, inquiryController.createInquiry);
