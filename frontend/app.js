@@ -143,6 +143,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- API Functions ---
 
+/**
+ * De-obfuscation helper
+ */
+async function handleResponse(response) {
+    const data = await response.json();
+    if (data && data._d && typeof data._d === 'string') {
+        try {
+            // Robust UTF-8 Base64 decoding
+            const decodedString = decodeURIComponent(escape(atob(data._d)));
+            return JSON.parse(decodedString);
+        } catch (e) {
+            try {
+                return JSON.parse(atob(data._d));
+            } catch (e2) {
+                console.error("De-obfuscation failed:", e2);
+                return data;
+            }
+        }
+    }
+    return data;
+}
+
+
 async function loadFeaturedProducts() {
     const gallery = document.getElementById('featured-gallery');
     if (!gallery) return;
@@ -160,11 +183,12 @@ async function loadFeaturedProducts() {
 
     try {
         const response = await fetch(`${API_BASE_URL}/products`);
-        const result = await response.json();
+        const result = await handleResponse(response);
         const products = result.data || result; 
 
         const featured = products.slice(0, 3);
         gallery.innerHTML = featured.map(product => renderProductCard(product)).join('');
+        window.dispatchEvent(new CustomEvent('contentLoaded'));
     } catch (error) {
         console.error('Error loading products:', error);
         gallery.innerHTML = '<p class="error-msg">Failed to load products. Please try again later.</p>';
@@ -188,10 +212,11 @@ async function loadAllProducts() {
 
     try {
         const response = await fetch(`${API_BASE_URL}/products`);
-        const result = await response.json();
+        const result = await handleResponse(response);
         const products = result.data || result;
 
         grid.innerHTML = products.map(product => renderProductCard(product)).join('');
+        window.dispatchEvent(new CustomEvent('contentLoaded'));
         
         // Load dynamic categories for filtering
         await loadCategories();
@@ -237,7 +262,7 @@ async function loadProductDetails() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const product = await response.json();
+        const product = await handleResponse(response);
         if (!product) throw new Error('Product not found');
 
         // Populate DOM
@@ -336,7 +361,7 @@ async function loadRelatedProducts(categoryId, currentId) {
 
     try {
         const response = await fetch(`${API_BASE_URL}/products`);
-        const allProducts = await response.json();
+        const allProducts = await handleResponse(response);
         
         // Filter by category and exclude current
         let related = allProducts.filter(p => p.category_id === categoryId && p.id !== currentId);
@@ -372,7 +397,7 @@ async function loadCategories() {
             throw new TypeError("Oops, we haven't got JSON!");
         }
 
-        const categories = await response.json();
+        const categories = await handleResponse(response);
 
         if (categories && categories.length > 0) {
             // Keep the "All" button
