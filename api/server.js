@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 8080;
 // Trust the first proxy (Render) for accurate rate limiting
 app.set('trust proxy', 1);
 
-// 1. Configure CORS (Must be BEFORE Helmet for headers to stick)
+// 1. Configure CORS (Simplified to prevent crashes)
 const allowedOrigins = [
     'http://localhost:3000', 
     'http://localhost:3001', 
@@ -21,43 +21,36 @@ const allowedOrigins = [
 ].filter(Boolean);
 
 app.use(cors({
-    origin: function (origin, callback) {
-        const isLocalNetwork = origin && (
-            origin.startsWith('http://127.0.0.1') || 
-            origin.startsWith('http://localhost') || 
-            origin.startsWith('http://192.168.')
-        );
-
-        if (!origin || origin === 'null' || isLocalNetwork || allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            console.warn(`Blocked by CORS: ${origin}`);
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+    origin: allowedOrigins,
     credentials: true
 }));
 
-// 2. Security Headers (Configured to allow Cross-Origin Resource Sharing)
-app.use(helmet({
-    crossOriginResourcePolicy: { policy: "cross-origin" },
-    crossOriginEmbedderPolicy: false
-}));
+// 2. Security Headers (Temporarily Disabled for debugging)
+// app.use(helmet({
+//     crossOriginResourcePolicy: { policy: "cross-origin" },
+//     crossOriginEmbedderPolicy: false
+// }));
 
-// 3. Block hidden files and path traversal
+// 3. Verbose Logger for Debugging
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
+});
+
+// 4. Block hidden files and path traversal
 const { blockHiddenFiles } = require('./src/middleware/security');
 app.use(blockHiddenFiles);
 
 // Configure Rate Limiting
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-    message: 'Too many requests from this IP, please try again after 15 minutes'
+    windowMs: 15 * 60 * 1000, 
+    max: 100, 
+    standardHeaders: true, 
+    legacyHeaders: false, 
+    message: 'Too many requests'
 });
 
-// Apply rate limiting to all requests
+// Apply rate limiting
 app.use(limiter);
 
 // Middleware to parse JSON
@@ -84,13 +77,18 @@ app.use('/api/v1/public', publicRoutes);
 const { verifyAdminJWT, restrictToOwner } = require('./src/middleware/auth');
 app.use('/api/v1/admin', verifyAdminJWT, restrictToOwner, adminRoutes);
 
-// Error handling middleware for express-jwt
+// Final Error handling middleware
 app.use((err, req, res, next) => {
-    if (err.name === 'UnauthorizedError') {
-        res.status(401).json({ error: 'Unauthorized', message: 'Invalid or missing token.' });
-    } else {
-        next(err);
-    }
+    console.error('GLOBAL ERROR:', err);
+    
+    // Set status code (default to 500)
+    const statusCode = err.status || err.statusCode || 500;
+    
+    res.status(statusCode).json({ 
+        error: err.name || 'Internal Server Error', 
+        message: err.message || 'An unexpected error occurred',
+        path: req.path
+    });
 });
 
 app.listen(PORT, () => {

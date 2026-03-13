@@ -4,6 +4,11 @@
  */
 
 const obfuscateResponse = (req, res, next) => {
+    // DO NOT obfuscate the config endpoint - it's needed for bootstrapping
+    if (req.path.includes('/public/config')) {
+        return next();
+    }
+
     const originalJson = res.json;
 
     res.json = function (data) {
