@@ -10,28 +10,18 @@ const PORT = process.env.PORT || 8080;
 // Trust the first proxy (Render) for accurate rate limiting
 app.set('trust proxy', 1);
 
-// Enable Strict SSL (Helmet covers many security headers, including HSTS)
-app.use(helmet());
-
-// Global Security Middleware (Block hidden files and path traversal)
-const { blockHiddenFiles } = require('./src/middleware/security');
-app.use(blockHiddenFiles);
-
-// Configure CORS
-// Allowing requests from the Public Storefront and Admin Dashboard domains
+// 1. Configure CORS (Must be BEFORE Helmet for headers to stick)
 const allowedOrigins = [
-    'http://localhost:3000', // Typical Next.js default port
-    'http://localhost:3001', // Local Admin Dashboard
+    'http://localhost:3000', 
+    'http://localhost:3001', 
     'https://frontend-xi-eight-41.vercel.app',
     'https://gifty-s-imported-goods-website.vercel.app',
     process.env.PUBLIC_STOREFRONT_URL,
     process.env.ADMIN_DASHBOARD_URL
-].filter(Boolean); // Remove undefined values if env vars aren't set yet
+].filter(Boolean);
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl) or null (file:// protocol for testing)
-        // Also allow local network development origins
         const isLocalNetwork = origin && (
             origin.startsWith('http://127.0.0.1') || 
             origin.startsWith('http://localhost') || 
@@ -47,6 +37,16 @@ app.use(cors({
     },
     credentials: true
 }));
+
+// 2. Security Headers (Configured to allow Cross-Origin Resource Sharing)
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginEmbedderPolicy: false
+}));
+
+// 3. Block hidden files and path traversal
+const { blockHiddenFiles } = require('./src/middleware/security');
+app.use(blockHiddenFiles);
 
 // Configure Rate Limiting
 const limiter = rateLimit({
