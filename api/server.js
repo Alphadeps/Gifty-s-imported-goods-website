@@ -23,6 +23,7 @@ const allowedOrigins = [
     'http://localhost:3000', // Typical Next.js default port
     'http://localhost:3001', // Local Admin Dashboard
     'https://frontend-xi-eight-41.vercel.app',
+    'https://gifty-s-imported-goods-website.vercel.app',
     process.env.PUBLIC_STOREFRONT_URL,
     process.env.ADMIN_DASHBOARD_URL
 ].filter(Boolean); // Remove undefined values if env vars aren't set yet
