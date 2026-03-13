@@ -13,6 +13,10 @@ app.set('trust proxy', 1);
 // Enable Strict SSL (Helmet covers many security headers, including HSTS)
 app.use(helmet());
 
+// Global Security Middleware (Block hidden files and path traversal)
+const { blockHiddenFiles } = require('./src/middleware/security');
+app.use(blockHiddenFiles);
+
 // Configure CORS
 // Allowing requests from the Public Storefront and Admin Dashboard domains
 const allowedOrigins = [
