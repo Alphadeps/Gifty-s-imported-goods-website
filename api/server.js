@@ -10,26 +10,15 @@ const PORT = process.env.PORT || 8080;
 // Trust the first proxy (Render) for accurate rate limiting
 app.set('trust proxy', 1);
 
-// 1. Configure CORS (Simplified to prevent crashes)
-const allowedOrigins = [
-    'http://localhost:3000', 
-    'http://localhost:3001', 
-    'https://frontend-xi-eight-41.vercel.app',
-    'https://gifty-s-imported-goods-website.vercel.app',
-    process.env.PUBLIC_STOREFRONT_URL,
-    process.env.ADMIN_DASHBOARD_URL
-].filter(Boolean);
-
 app.use(cors({
-    origin: allowedOrigins,
+    origin: '*', // Temporarily open for debugging
     credentials: true
 }));
 
-// 2. Security Headers (Temporarily Disabled for debugging)
-// app.use(helmet({
-//     crossOriginResourcePolicy: { policy: "cross-origin" },
-//     crossOriginEmbedderPolicy: false
-// }));
+// 2. High-Priority Config Endpoint (Must be BEFORE Rate Limiting and Obfuscation)
+const configController = require('./src/controllers/configController');
+app.get('/api/v1/public/config', configController.getPublicConfig);
+
 
 // 3. Verbose Logger for Debugging
 app.use((req, res, next) => {
@@ -41,10 +30,11 @@ app.use((req, res, next) => {
 const { blockHiddenFiles } = require('./src/middleware/security');
 app.use(blockHiddenFiles);
 
+
 // Configure Rate Limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, 
-    max: 100, 
+    max: 1000, // Increased for debugging
     standardHeaders: true, 
     legacyHeaders: false, 
     message: 'Too many requests'
