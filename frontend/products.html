@@ -35,19 +35,19 @@
     <main>
         <!-- Featured Products Section -->
         <section class="products-section" style="padding-top: var(--space-xl);">
-            <div class="section-header fade-in-up">
+            <div class="section-header observe-reveal-up">
                 <h3 class="section-title">Product Catalog</h3>
             </div>
 
             <!-- Category Filters -->
-            <div class="product-filters fade-in-up" style="animation-delay: 0.1s;">
+            <div class="product-filters observe-reveal-up" style="transition-delay: 0.1s;">
                 <button class="filter-btn active" data-filter="all">All</button>
                 <button class="filter-btn" data-filter="radiance">Radiance</button>
                 <button class="filter-btn" data-filter="hydration">Hydration</button>
                 <button class="filter-btn" data-filter="repair">Repair</button>
             </div>
 
-            <div class="products-grid fade-in-up" id="products-grid" style="animation-delay: 0.2s">
+            <div class="products-grid stagger-reveal" id="products-grid">
                 <!-- Products will be loaded dynamically -->
             </div>
             </div>
@@ -62,6 +62,7 @@
     <script src="components/footer.js"></script>
     <script src="config.js"></script>
     <script src="app.js"></script>
+    <script src="animations.js"></script>
 </body>
 
 </html>

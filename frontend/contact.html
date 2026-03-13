@@ -38,14 +38,14 @@
     <main>
         <!-- Location & Contact Section -->
         <section class="contact-section" id="contact" style="padding-top: var(--space-xl);">
-            <div class="section-header fade-in-up">
+            <div class="section-header observe-reveal-up">
                 <h3 class="section-title">Visit Us</h3>
                 <p class="section-subtitle">Experience the radiance in person.</p>
             </div>
 
             <div class="contact-grid">
                 <!-- Contact Methods & Form -->
-                <div class="contact-card fade-in-up" style="animation-delay: 0.1s">
+                <div class="contact-card observe-reveal-up" style="transition-delay: 0.1s">
                     <form class="inquiry-form" onsubmit="event.preventDefault(); alert('Message sent successfully!');">
                         <h4 class="form-title">Send an Inquiry</h4>
                         <div class="input-group">
@@ -64,7 +64,7 @@
                     </form>
                 </div>
 
-                <div class="contact-methods-wrapper fade-in-up" style="animation-delay: 0.15s">
+                <div class="contact-methods-wrapper observe-reveal-up" style="transition-delay: 0.15s">
                     <div class="action-buttons">
                         <a href="tel:0244304354" class="btn-action call-btn">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -111,7 +111,7 @@
                 </div>
 
                 <!-- Google Maps Embed Placehoder -->
-                <div class="map-container fade-in-up" style="animation-delay: 0.2s">
+                <div class="map-container observe-reveal-up" style="transition-delay: 0.2s">
                     <iframe
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15881.332304850403!2d-0.198308!3d5.584348!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdf9a9a0b0b0b0b%3A0xb0b0b0b0b0b0b0b!2sAccra%2C%20Ghana!5e0!3m2!1sen!2sus!4v1614123456789!5m2!1sen!2sus"
                         width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
@@ -129,6 +129,7 @@
     <script src="components/footer.js"></script>
     <script src="config.js"></script>
     <script src="app.js"></script>
+    <script src="animations.js"></script>
 </body>
 
 </html>

@@ -1824,4 +1824,50 @@ h6 {
     color: var(--clr-text-muted);
     font-size: 0.8rem;
     text-align: center;
-}
+}
+
+/* ===== MINIMALIST SCROLL ANIMATIONS ===== */
+.observe-fade,
+.observe-reveal-up,
+.observe-reveal-side {
+    opacity: 0;
+    transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+    will-change: opacity, transform;
+}
+
+.observe-reveal-up {
+    transform: translateY(20px);
+}
+
+.observe-reveal-side {
+    transform: translateX(-20px);
+}
+
+.reveal-visible {
+    opacity: 1;
+    transform: translate(0, 0);
+}
+
+/* Delay Utils */
+.delay-100 { transition-delay: 0.1s; }
+.delay-200 { transition-delay: 0.2s; }
+.delay-300 { transition-delay: 0.3s; }
+.delay-400 { transition-delay: 0.4s; }
+.delay-500 { transition-delay: 0.5s; }
+
+@keyframes fadeInUpSubtle {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInSubtle {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
