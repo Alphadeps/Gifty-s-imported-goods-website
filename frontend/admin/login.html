@@ -43,168 +43,192 @@
         .login-btn:disabled { opacity: 0.7; cursor: not-allowed; }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-text-main dark:text-slate-100 min-h-screen flex items-center justify-center font-display p-4">
-    <div class="w-full max-w-[400px] bg-white dark:bg-background-dark rounded-3xl shadow-2xl overflow-hidden border border-muted/10">
-        
-        <main class="flex flex-col items-center justify-center px-6 py-12">
-            <!-- Branding -->
-            <div class="mb-12 flex flex-col items-center text-center">
-                <div class="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <svg class="h-8 w-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.744c0 5.548 4.076 10.134 9.54 10.877a11.957 11.957 0 009.54-10.877c0-1.315-.212-2.583-.602-3.744A11.959 11.959 0 0112 2.714z" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <h1 class="text-[32px] font-bold tracking-tight text-text-main dark:text-slate-100">Admin Login</h1>
-                <p class="mt-2 text-[15px] font-medium text-muted dark:text-slate-400">Gifty's Imported Goods</p>
+<body class="bg-background-light dark:bg-background-dark text-text-main dark:text-slate-100 min-h-screen font-display">
+    
+    <div class="flex min-h-screen">
+        <!-- Left Side: Visual/Brand (Desktop only) -->
+        <div class="hidden lg:flex lg:w-[45%] xl:w-1/2 relative bg-primary items-center justify-center overflow-hidden">
+            <img src="assets/login-bg.png" alt="Premium Cosmetics" class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-40 grayscale hover:grayscale-0 transition-all duration-1000">
+            <div class="relative z-10 text-white p-12 text-center">
+                <h2 class="text-5xl font-bold mb-6 tracking-tight">Management Portal</h2>
+                <p class="text-xl opacity-90 max-w-md mx-auto leading-relaxed">Secure access to Gifty's Imported Goods inventory and digital storefront settings.</p>
             </div>
+            <div class="absolute bottom-12 left-12 right-12 flex justify-between text-white/60 text-xs font-semibold uppercase tracking-widest">
+                <span>© 2026 Admin Panel</span>
+                <span>v 1.2.0</span>
+            </div>
+        </div>
 
-            <!-- View 1: Login Form (Default) -->
-            <div id="login-view" class="w-full flex flex-col gap-5">
-                <form id="login-form" class="w-full flex flex-col gap-5">
-                    <div class="space-y-2">
-                        <label for="email" class="text-sm font-semibold text-text-main dark:text-slate-200">Email Address</label>
-                        <input type="email" id="email" required placeholder="amagimpa@gmail.com" 
-                               class="w-full h-12 px-4 rounded-lg border-muted/30 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary">
-                    </div>
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between">
-                            <label for="password" class="text-sm font-semibold text-text-main dark:text-slate-200">Password</label>
-                            <button type="button" id="forgot-password-link" class="text-[13px] font-medium text-primary hover:underline">Forgot Password?</button>
+        <!-- Right Side: Auth Forms -->
+        <div class="w-full lg:w-[55%] xl:w-1/2 flex items-center justify-center p-6 sm:p-12">
+            <div class="w-full max-w-[440px]">
+                
+                <main class="flex flex-col">
+                    <!-- Branding (Mobile & Desktop) -->
+                    <div class="mb-12 flex flex-col items-center lg:items-start text-center lg:text-left">
+                        <div class="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                            <svg class="h-8 w-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.744c0 5.548 4.076 10.134 9.54 10.877a11.957 11.957 0 009.54-10.877c0-1.315-.212-2.583-.602-3.744A11.959 11.959 0 0112 2.714z" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
                         </div>
-                        <input type="password" id="password" required placeholder="••••••••" 
-                               class="w-full h-12 px-4 rounded-lg border-muted/30 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary">
+                        <h1 class="text-4xl font-bold tracking-tight text-text-main dark:text-slate-100">Welcome Back</h1>
+                        <p class="mt-2 text-[16px] font-medium text-muted dark:text-slate-400">Sign in to manage Gifty's Imported Goods</p>
                     </div>
 
-                    <div id="error-message" class="hidden p-4 rounded-xl bg-red-50 text-red-600 text-[13px] font-semibold text-center border border-red-100">
-                        Access Denied. Please check your credentials.
-                    </div>
+                    <!-- Forms container -->
+                    <div class="bg-white dark:bg-slate-900/50 p-8 rounded-3xl shadow-xl border border-muted/5 lg:border-none lg:bg-transparent lg:p-0 lg:shadow-none">
+                        
+                        <!-- View 1: Login Form (Default) -->
+                        <div id="login-view" class="w-full flex flex-col gap-5">
+                            <form id="login-form" class="w-full flex flex-col gap-5">
+                                <div class="space-y-2">
+                                    <label for="email" class="text-sm font-semibold text-text-main dark:text-slate-200">Email Address</label>
+                                    <input type="email" id="email" required placeholder="admin@gifty.com" 
+                                           class="w-full h-12 px-4 rounded-lg border-muted/30 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary">
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between">
+                                        <label for="password" class="text-sm font-semibold text-text-main dark:text-slate-200">Password</label>
+                                        <button type="button" id="forgot-password-link" class="text-[13px] font-medium text-primary hover:underline">Forgot Password?</button>
+                                    </div>
+                                    <input type="password" id="password" required placeholder="••••••••" 
+                                           class="w-full h-12 px-4 rounded-lg border-muted/30 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary">
+                                </div>
 
-                    <button type="submit" id="submit-btn" 
-                            class="mt-4 group flex h-[52px] w-full items-center justify-center gap-3 rounded-lg bg-primary px-4 text-[15px] font-semibold text-white shadow-md shadow-primary/20 transition-all hover:bg-primary/90 active:bg-primary/80">
-                        <span id="btn-text">Sign In</span>
-                        <span id="loading-icon" class="hidden material-symbols-outlined animate-spin text-[20px]">&#xe052;</span>
-                    </button>
+                                <div id="error-message" class="hidden p-4 rounded-xl bg-red-50 text-red-600 text-[13px] font-semibold text-center border border-red-100">
+                                    Access Denied. Please check your credentials.
+                                </div>
 
-                    <div class="relative my-6">
-                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-muted/20"></div></div>
-                        <div class="relative flex justify-center text-xs uppercase"><span class="bg-white dark:bg-background-dark px-2 text-muted">Or</span></div>
-                    </div>
+                                <button type="submit" id="submit-btn" 
+                                        class="mt-4 group flex h-[52px] w-full items-center justify-center gap-3 rounded-lg bg-primary px-4 text-[15px] font-semibold text-white shadow-md shadow-primary/20 transition-all hover:bg-primary/90 active:bg-primary/80">
+                                    <span id="btn-text">Sign In</span>
+                                    <span id="loading-icon" class="hidden material-symbols-outlined animate-spin text-[20px]">&#xe052;</span>
+                                </button>
 
-                    <button type="button" id="phone-login-link" 
-                            class="flex h-[52px] w-full items-center justify-center gap-3 rounded-lg border border-primary/20 bg-primary/5 px-4 text-[15px] font-semibold text-primary transition-all hover:bg-primary/10">
-                        <span class="material-symbols-outlined text-[20px]">&#xe32c;</span>
-                        <span>Sign in with Phone</span>
-                    </button>
-                </form>
-            </div>
+                                <div class="relative my-6">
+                                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-muted/20"></div></div>
+                                    <div class="relative flex justify-center text-xs uppercase"><span class="bg-white dark:bg-slate-900 lg:bg-background-light dark:lg:bg-background-dark px-2 text-muted">Or</span></div>
+                                </div>
 
-            <!-- View 2: Request Reset (Email) -->
-            <div id="reset-request-view" class="hidden w-full flex flex-col gap-5">
-                <p class="text-[14px] text-muted text-center mb-2">Enter your email to receive a recovery code.</p>
-                <form id="reset-request-form" class="w-full flex flex-col gap-5">
-                    <div class="space-y-2">
-                        <label for="reset-email" class="text-sm font-semibold text-text-main dark:text-slate-200">Email Address</label>
-                        <input type="email" id="reset-email" required placeholder="amagimpa@gmail.com" 
-                               class="w-full h-12 px-4 rounded-lg border-muted/30 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary">
-                    </div>
-                    <div id="reset-request-error" class="hidden p-3 rounded-lg bg-red-50 text-red-600 text-[12px] font-semibold text-center"></div>
-                    
-                    <button type="submit" id="reset-request-btn" class="mt-4 flex h-[52px] w-full items-center justify-center gap-3 rounded-lg bg-primary px-4 text-[15px] font-semibold text-white transition-all hover:bg-primary/90 active:bg-primary/80">
-                        <span class="btn-text">Send Code</span>
-                        <span class="loading-icon hidden material-symbols-outlined animate-spin text-[20px]">&#xe052;</span>
-                    </button>
-                    <button type="button" class="back-to-login text-sm text-muted hover:text-text-main transition-colors text-center">Back to Login</button>
-                </form>
-            </div>
-
-            <!-- View 3: Verify OTP -->
-            <div id="verify-otp-view" class="hidden w-full flex flex-col gap-5">
-                <p class="text-[14px] text-muted text-center mb-2">Check your email for the recovery code.</p>
-                <form id="verify-otp-form" class="w-full flex flex-col gap-5">
-                    <div class="space-y-2">
-                        <label for="otp-code" class="text-sm font-semibold text-text-main dark:text-slate-200">6-Digit Code</label>
-                        <input type="text" id="otp-code" required placeholder="123456" maxlength="6"
-                               class="w-full h-12 px-4 text-center text-xl tracking-[0.5em] font-bold rounded-lg border-muted/30 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary">
-                    </div>
-                    <div id="verify-otp-error" class="hidden p-3 rounded-lg bg-red-50 text-red-600 text-[12px] font-semibold text-center"></div>
-                    
-                    <button type="submit" id="verify-otp-btn" class="mt-4 flex h-[52px] w-full items-center justify-center gap-3 rounded-lg bg-primary px-4 text-[15px] font-semibold text-white transition-all hover:bg-primary/90 active:bg-primary/80">
-                        <span class="btn-text">Verify Code</span>
-                        <span class="loading-icon hidden material-symbols-outlined animate-spin text-[20px]">&#xe052;</span>
-                    </button>
-                    <button type="button" class="back-to-login text-sm text-muted hover:text-text-main transition-colors text-center">Back to Login</button>
-                </form>
-            </div>
-
-            <!-- View 4: New Password -->
-            <div id="new-password-view" class="hidden w-full flex flex-col gap-5">
-                <p class="text-[14px] text-muted text-center mb-2">Set your new secure password.</p>
-                <form id="new-password-form" class="w-full flex flex-col gap-5">
-                    <div class="space-y-2">
-                        <label for="new-password" class="text-sm font-semibold text-text-main dark:text-slate-200">New Password</label>
-                        <input type="password" id="new-password" required placeholder="••••••••" 
-                               class="w-full h-12 px-4 rounded-lg border-muted/30 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary">
-                    </div>
-                    <div class="space-y-2">
-                        <label for="confirm-password" class="text-sm font-semibold text-text-main dark:text-slate-200">Confirm New Password</label>
-                        <input type="password" id="confirm-password" required placeholder="••••••••" 
-                               class="w-full h-12 px-4 rounded-lg border-muted/30 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary">
-                    </div>
-                    <div id="new-password-error" class="hidden p-3 rounded-lg bg-red-50 text-red-600 text-[12px] font-semibold text-center"></div>
-                    
-                    <button type="submit" id="new-password-btn" class="mt-4 flex h-[52px] w-full items-center justify-center gap-3 rounded-lg bg-primary px-4 text-[15px] font-semibold text-white transition-all hover:bg-primary/90 active:bg-primary/80">
-                        <span class="btn-text">Reset Password</span>
-                        <span class="loading-icon hidden material-symbols-outlined animate-spin text-[20px]">&#xe052;</span>
-                    </button>
-                    <button type="button" class="back-to-login text-sm text-muted hover:text-text-main transition-colors text-center">Back to Login</button>
-                </form>
-            </div>
-
-            <!-- View 5: Phone Login (Entry) -->
-            <div id="phone-login-view" class="hidden w-full flex flex-col gap-5">
-                <p class="text-[14px] text-muted text-center mb-2">Enter your phone number to receive a secure code.</p>
-                <form id="phone-login-form" class="w-full flex flex-col gap-5">
-                    <div class="space-y-2">
-                        <label for="phone-number" class="text-sm font-semibold text-text-main dark:text-slate-200">Phone Number</label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted font-semibold">+</span>
-                            <input type="tel" id="phone-number" required placeholder="233244304354" 
-                                   class="w-full h-12 pl-8 pr-4 rounded-lg border-muted/30 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary">
+                                <button type="button" id="phone-login-link" 
+                                        class="flex h-[52px] w-full items-center justify-center gap-3 rounded-lg border border-primary/20 bg-primary/5 px-4 text-[15px] font-semibold text-primary transition-all hover:bg-primary/10">
+                                    <span class="material-symbols-outlined text-[20px]">&#xe32c;</span>
+                                    <span>Sign in with Phone</span>
+                                </button>
+                            </form>
                         </div>
-                    </div>
-                    <div id="phone-login-error" class="hidden p-3 rounded-lg bg-red-50 text-red-600 text-[12px] font-semibold text-center"></div>
-                    
-                    <button type="submit" class="mt-4 flex h-[52px] w-full items-center justify-center gap-3 rounded-lg bg-primary px-4 text-[15px] font-semibold text-white transition-all hover:bg-primary/90 active:bg-primary/80">
-                        <span class="btn-text">Send OTP</span>
-                        <span class="loading-icon hidden material-symbols-outlined animate-spin text-[20px]">&#xe052;</span>
-                    </button>
-                    <button type="button" class="back-to-login text-sm text-muted hover:text-text-main transition-colors text-center">Back to Login</button>
-                </form>
-            </div>
 
-            <!-- View 6: Verify Phone OTP -->
-            <div id="verify-phone-view" class="hidden w-full flex flex-col gap-5">
-                <p class="text-[14px] text-muted text-center mb-2">Enter the code sent to your phone.</p>
-                <form id="verify-phone-form" class="w-full flex flex-col gap-5">
-                    <div class="space-y-2">
-                        <label for="phone-otp" class="text-sm font-semibold text-text-main dark:text-slate-200">6-Digit Code</label>
-                        <input type="text" id="phone-otp" required placeholder="123456" maxlength="6"
-                               class="w-full h-12 px-4 text-center text-xl tracking-[0.5em] font-bold rounded-lg border-muted/30 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary">
-                    </div>
-                    <div id="verify-phone-error" class="hidden p-3 rounded-lg bg-red-50 text-red-600 text-[12px] font-semibold text-center"></div>
-                    
-                    <button type="submit" class="mt-4 flex h-[52px] w-full items-center justify-center gap-3 rounded-lg bg-primary px-4 text-[15px] font-semibold text-white transition-all hover:bg-primary/90 active:bg-primary/80">
-                        <span class="btn-text">Verify & Login</span>
-                        <span class="loading-icon hidden material-symbols-outlined animate-spin text-[20px]">&#xe052;</span>
-                    </button>
-                    <button type="button" class="back-to-login text-sm text-muted hover:text-text-main transition-colors text-center">Back to Login</button>
-                </form>
-            </div>
+                        <!-- View 2: Request Reset (Email) -->
+                        <div id="reset-request-view" class="hidden w-full flex flex-col gap-5">
+                            <p class="text-[14px] text-muted text-center lg:text-left mb-2 text-balance leading-relaxed">Enter your registered email address to receive a zero-trust recovery code.</p>
+                            <form id="reset-request-form" class="w-full flex flex-col gap-5">
+                                <div class="space-y-2">
+                                    <label for="reset-email" class="text-sm font-semibold text-text-main dark:text-slate-200">Email Address</label>
+                                    <input type="email" id="reset-email" required placeholder="admin@gifty.com" 
+                                           class="w-full h-12 px-4 rounded-lg border-muted/30 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary">
+                                </div>
+                                <div id="reset-request-error" class="hidden p-3 rounded-lg bg-red-50 text-red-600 text-[12px] font-semibold text-center"></div>
+                                
+                                <button type="submit" id="reset-request-btn" class="mt-4 flex h-[52px] w-full items-center justify-center gap-3 rounded-lg bg-primary px-4 text-[15px] font-semibold text-white transition-all hover:bg-primary/90 active:bg-primary/80">
+                                    <span class="btn-text">Send Code</span>
+                                    <span class="loading-icon hidden material-symbols-outlined animate-spin text-[20px]">&#xe052;</span>
+                                </button>
+                                <button type="button" class="back-to-login text-sm font-semibold text-primary hover:text-primary/80 transition-colors text-center lg:text-left">Return to Login</button>
+                            </form>
+                        </div>
 
-            <div class="mt-12 text-center">
-                <p class="text-[13px] text-muted dark:text-slate-500">Secure Access Point</p>
+                        <!-- View 3: Verify OTP -->
+                        <div id="verify-otp-view" class="hidden w-full flex flex-col gap-5">
+                            <p class="text-[14px] text-muted text-center lg:text-left mb-2">A security code has been dispatched to your email.</p>
+                            <form id="verify-otp-form" class="w-full flex flex-col gap-5">
+                                <div class="space-y-2">
+                                    <label for="otp-code" class="text-sm font-semibold text-text-main dark:text-slate-200">6-Digit Code</label>
+                                    <input type="text" id="otp-code" required placeholder="123456" maxlength="6"
+                                           class="w-full h-12 px-4 text-center text-xl tracking-[0.5em] font-bold rounded-lg border-muted/30 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary">
+                                </div>
+                                <div id="verify-otp-error" class="hidden p-3 rounded-lg bg-red-50 text-red-600 text-[12px] font-semibold text-center"></div>
+                                
+                                <button type="submit" id="verify-otp-btn" class="mt-4 flex h-[52px] w-full items-center justify-center gap-3 rounded-lg bg-primary px-4 text-[15px] font-semibold text-white transition-all hover:bg-primary/90 active:bg-primary/80">
+                                    <span class="btn-text">Verify Code</span>
+                                    <span class="loading-icon hidden material-symbols-outlined animate-spin text-[20px]">&#xe052;</span>
+                                </button>
+                                <button type="button" class="back-to-login text-sm font-semibold text-primary hover:text-primary/80 transition-colors text-center lg:text-left">Return to Login</button>
+                            </form>
+                        </div>
+
+                        <!-- View 4: New Password -->
+                        <div id="new-password-view" class="hidden w-full flex flex-col gap-5">
+                            <p class="text-[14px] text-muted text-center lg:text-left mb-2">Establish a new high-entropy password.</p>
+                            <form id="new-password-form" class="w-full flex flex-col gap-5">
+                                <div class="space-y-2">
+                                    <label for="new-password" class="text-sm font-semibold text-text-main dark:text-slate-200">New Password</label>
+                                    <input type="password" id="new-password" required placeholder="••••••••" 
+                                           class="w-full h-12 px-4 rounded-lg border-muted/30 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary">
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="confirm-password" class="text-sm font-semibold text-text-main dark:text-slate-200">Confirm New Password</label>
+                                    <input type="password" id="confirm-password" required placeholder="••••••••" 
+                                           class="w-full h-12 px-4 rounded-lg border-muted/30 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary">
+                                </div>
+                                <div id="new-password-error" class="hidden p-3 rounded-lg bg-red-50 text-red-600 text-[12px] font-semibold text-center"></div>
+                                
+                                <button type="submit" id="new-password-btn" class="mt-4 flex h-[52px] w-full items-center justify-center gap-3 rounded-lg bg-primary px-4 text-[15px] font-semibold text-white transition-all hover:bg-primary/90 active:bg-primary/80">
+                                    <span class="btn-text">Reset Password</span>
+                                    <span class="loading-icon hidden material-symbols-outlined animate-spin text-[20px]">&#xe052;</span>
+                                </button>
+                                <button type="button" class="back-to-login text-sm font-semibold text-primary hover:text-primary/80 transition-colors text-center lg:text-left">Return to Login</button>
+                            </form>
+                        </div>
+
+                        <!-- View 5: Phone Login (Entry) -->
+                        <div id="phone-login-view" class="hidden w-full flex flex-col gap-5">
+                            <p class="text-[14px] text-muted text-center lg:text-left mb-2">Authorize access via verified mobile device.</p>
+                            <form id="phone-login-form" class="w-full flex flex-col gap-5">
+                                <div class="space-y-2">
+                                    <label for="phone-number" class="text-sm font-semibold text-text-main dark:text-slate-200">Phone Number</label>
+                                    <div class="relative">
+                                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted font-semibold">+</span>
+                                        <input type="tel" id="phone-number" required placeholder="233XXXXXXXXX" 
+                                               class="w-full h-12 pl-8 pr-4 rounded-lg border-muted/30 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary">
+                                    </div>
+                                </div>
+                                <div id="phone-login-error" class="hidden p-3 rounded-lg bg-red-50 text-red-600 text-[12px] font-semibold text-center"></div>
+                                
+                                <button type="submit" class="mt-4 flex h-[52px] w-full items-center justify-center gap-3 rounded-lg bg-primary px-4 text-[15px] font-semibold text-white transition-all hover:bg-primary/90 active:bg-primary/80">
+                                    <span class="btn-text">Send OTP</span>
+                                    <span class="loading-icon hidden material-symbols-outlined animate-spin text-[20px]">&#xe052;</span>
+                                </button>
+                                <button type="button" class="back-to-login text-sm font-semibold text-primary hover:text-primary/80 transition-colors text-center lg:text-left">Return to Login</button>
+                            </form>
+                        </div>
+
+                        <!-- View 6: Verify Phone OTP -->
+                        <div id="verify-phone-view" class="hidden w-full flex flex-col gap-5">
+                            <p class="text-[14px] text-muted text-center lg:text-left mb-2">Input the code received on your device.</p>
+                            <form id="verify-phone-form" class="w-full flex flex-col gap-5">
+                                <div class="space-y-2">
+                                    <label for="phone-otp" class="text-sm font-semibold text-text-main dark:text-slate-200">6-Digit Code</label>
+                                    <input type="text" id="phone-otp" required placeholder="123456" maxlength="6"
+                                           class="w-full h-12 px-4 text-center text-xl tracking-[0.5em] font-bold rounded-lg border-muted/30 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary">
+                                </div>
+                                <div id="verify-phone-error" class="hidden p-3 rounded-lg bg-red-50 text-red-600 text-[12px] font-semibold text-center"></div>
+                                
+                                <button type="submit" class="mt-4 flex h-[52px] w-full items-center justify-center gap-3 rounded-lg bg-primary px-4 text-[15px] font-semibold text-white transition-all hover:bg-primary/90 active:bg-primary/80">
+                                    <span class="btn-text">Verify & Login</span>
+                                    <span class="loading-icon hidden material-symbols-outlined animate-spin text-[20px]">&#xe052;</span>
+                                </button>
+                                <button type="button" class="back-to-login text-sm font-semibold text-primary hover:text-primary/80 transition-colors text-center lg:text-left">Return to Login</button>
+                            </form>
+                        </div>
+
+                    </div>
+
+                    <div class="mt-12 text-center lg:text-left">
+                        <p class="text-[12px] text-muted dark:text-slate-500 font-bold tracking-[0.2em] uppercase">Secure Access Endpoint</p>
+                    </div>
+                </main>
             </div>
-        </main>
+        </div>
     </div>
 
     <!-- Supabase SDK -->
@@ -272,7 +296,7 @@
 
                 try {
                     await auth.login(email, password);
-                    showToast("Login successful! Redirecting...");
+                    showToast("Access Granted", "success");
                     setTimeout(() => window.location.href = 'products.html', 1500);
                 } catch (error) {
                     errorMsg.innerText = error.message.includes("Non-owner") ? "Access Restricted" : "Invalid credentials.";
@@ -345,7 +369,7 @@
 
                 try {
                     await auth.updateUserPassword(p1);
-                    showToast("Password updated! Please login.");
+                    showToast("Vault Secure", "success");
                     showView('login');
                 } catch (error) {
                     errorMsg.innerText = "Failed to update password. Try again.";
@@ -389,7 +413,7 @@
 
                 try {
                     await auth.verifyPhoneOTP(tempPhone, code);
-                    showToast("Login successful! Redirecting...");
+                    showToast("Access Granted", "success");
                     setTimeout(() => window.location.href = 'products.html', 1500);
                 } catch (error) {
                     errorMsg.innerText = "Invalid or expired code.";

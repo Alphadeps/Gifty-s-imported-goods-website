@@ -450,7 +450,7 @@
                 });
 
                 if (response && response.ok) {
-                    showToast(productId ? 'Product updated!' : 'Product created!');
+                    showToast(productId ? 'Inventory Synced' : 'Catalog Updated', 'success');
                     setTimeout(() => window.location.href = 'products.html', 1000);
                 } else {
                     const error = await response.json();

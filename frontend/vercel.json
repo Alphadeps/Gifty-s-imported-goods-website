@@ -6,6 +6,14 @@
     {
       "source": "/(index|about|products|contact|privacy-policy)",
       "destination": "/$1.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/admin/(login|products|categories|add-edit-product)",
+      "destination": "/admin/$1.html"
     }
   ],
   "headers": [

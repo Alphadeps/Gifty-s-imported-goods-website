@@ -3,7 +3,7 @@ const jwksRsa = require('jwks-rsa');
 
 // Configuration
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://zwubakrzjgptslrypqli.supabase.co';
-const OWNER_EMAIL = process.env.OWNER_EMAIL || 'amagimpa@gmail.com';
+const OWNER_EMAIL = process.env.OWNER_EMAIL || 'admin@gifty.com';
 const OWNER_PHONE = process.env.OWNER_PHONE || '233244304354';
 
 // Authentication middleware using Supabase JWKS for ES256 verification

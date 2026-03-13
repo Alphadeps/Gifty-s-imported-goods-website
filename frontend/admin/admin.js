@@ -21,11 +21,8 @@ const initSupabase = () => {
 };
 
 // --- Authentication Logic ---
-
-const OWNER_EMAIL = "amagimpa@gmail.com";
-const OWNER_PHONE = "233244304354"; // Format required by Supabase (E.164)
-
 const auth = {
+    isLoggingOut: false,
     // Initialize Auth Client
     init: async () => {
         initSupabase();
@@ -38,15 +35,23 @@ const auth = {
         if (!supabaseClient) return false;
         
         try {
-            const { data: { session }, error } = await supabaseClient.auth.getSession();
-            if (error) throw error;
-            
-            // If session exists, ensure local user state is also present
-            if (session && !localStorage.getItem('admin_user')) {
-                localStorage.setItem('admin_user', JSON.stringify(session.user));
+            // getSession is fast but can be stale; getUser is more authoritative
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) return false;
+
+            const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+            if (userError || !user) {
+                // If getUser fails but session existed, clean up
+                localStorage.removeItem('admin_user');
+                return false;
             }
             
-            return !!session;
+            // If session exists, ensure local user state is also present
+            if (!localStorage.getItem('admin_user')) {
+                localStorage.setItem('admin_user', JSON.stringify(user));
+            }
+            
+            return true;
         } catch (e) {
             console.error("Auth check failed:", e);
             return false;
@@ -56,11 +61,6 @@ const auth = {
     // Login with Supabase (Email/Password)
     login: async (email, password) => {
         if (!supabaseClient) initSupabase();
-        
-        // Strict frontend check for owner email
-        if (email !== "amagimpa@gmail.com") {
-            throw new Error("Access Denied: Non-owner account.");
-        }
 
         const { data, error } = await supabaseClient.auth.signInWithPassword({
             email,
@@ -75,14 +75,25 @@ const auth = {
     },
 
     logout: async () => {
+        auth.isLoggingOut = true;
         if (!supabaseClient) initSupabase();
-        await supabaseClient.auth.signOut();
-        localStorage.removeItem('admin_user');
-        window.location.href = 'login.html';
+        
+        try {
+            await supabaseClient.auth.signOut();
+        } catch (e) {
+            console.error("Logout error:", e);
+        } finally {
+            localStorage.removeItem('admin_user');
+            // Clear any other possible auth-related keys
+            localStorage.removeItem('supabase.auth.token'); 
+            window.location.href = 'login.html';
+        }
     },
 
     // Enforce authentication on protected pages
     checkAuth: async () => {
+        if (auth.isLoggingOut) return;
+
         // Bypass auth if in development mode
         if (window.CONFIG?.DEV_MODE) {
             console.log("Admin: Auth bypass enabled (DEV_MODE)");
@@ -90,12 +101,15 @@ const auth = {
         }
         
         const isAuth = await auth.isAuthenticated();
-        const isLoginPage = window.location.pathname.includes('login.html');
+        const currentPath = window.location.pathname.toLowerCase();
+        
+        // Robust check for login page across different URL formats (Vercel clean URLs vs .html)
+        const isLoginPage = currentPath.endsWith('login') || currentPath.endsWith('login.html');
 
         if (!isAuth && !isLoginPage) {
-            window.location.href = 'login.html';
+            window.location.replace('login.html'); // Use replace to avoid history pollution
         } else if (isAuth && isLoginPage) {
-            window.location.href = 'products.html';
+            window.location.replace('products.html');
         }
     },
 
@@ -118,9 +132,6 @@ const auth = {
 
         // Security check - normalize phone to compare
         const normalizedPhone = phone.replace(/\+/g, '');
-        if (normalizedPhone !== OWNER_PHONE) {
-            throw new Error("Access Denied: Non-owner phone number.");
-        }
 
         const { error } = await supabaseClient.auth.signInWithOtp({
             phone: `+${normalizedPhone}`
@@ -153,11 +164,6 @@ const auth = {
     requestPasswordReset: async (email) => {
         if (!supabaseClient) initSupabase();
         
-        // Security check
-        if (email !== "amagimpa@gmail.com") {
-            throw new Error("Invalid request. Access Restricted.");
-        }
-
         const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
         if (error) throw error;
         return true;
@@ -288,22 +294,39 @@ function toggleLoading(selector, show) {
 }
 
 function showToast(message, type = 'success') {
-    // Basic toast implementation
+    // Premium Minimalist Toast Implementation
     const toast = document.createElement('div');
-    toast.className = `fixed top-4 right-4 z-[100] px-6 py-3 rounded-lg text-white shadow-xl transform transition-all duration-300 translate-y-[-20px] opacity-0 ${
-        type === 'success' ? 'bg-primary' : 'bg-red-500'
-    }`;
-    toast.innerText = message;
+    
+    // Base Classes: Glassmorphism, Rounded, Shadow, Flex
+    const baseClasses = "fixed top-8 right-8 z-[1000] flex items-center gap-4 px-6 py-4 rounded-2xl backdrop-blur-xl border shadow-2xl transition-all duration-500 transform translate-x-12 opacity-0";
+    
+    // Type-Specific Styling
+    const typeStyles = type === 'success' 
+        ? "bg-white/80 dark:bg-slate-900/80 border-primary/20 text-primary shadow-primary/5" 
+        : "bg-white/80 dark:bg-slate-900/80 border-red-500/20 text-red-500 shadow-red-500/5";
+
+    const icon = type === 'success' 
+        ? '<span class="material-symbols-outlined text-2xl font-bold">check_circle</span>'
+        : '<span class="material-symbols-outlined text-2xl font-bold">error</span>';
+
+    toast.className = `${baseClasses} ${typeStyles}`;
+    toast.innerHTML = `
+        <div class="flex items-center gap-3">
+            ${icon}
+            <span class="text-[15px] font-bold tracking-tight uppercase">${message}</span>
+        </div>
+    `;
+
     document.body.appendChild(toast);
     
-    // Animate in
-    setTimeout(() => {
-        toast.classList.remove('translate-y-[-20px]', 'opacity-0');
-    }, 10);
+    // Animate In: Slide & Fade
+    requestAnimationFrame(() => {
+        toast.classList.remove('translate-x-12', 'opacity-0');
+    });
     
-    // Animate out and remove
+    // Remove sequence
     setTimeout(() => {
-        toast.classList.add('translate-y-[-20px]', 'opacity-0');
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
+        toast.classList.add('opacity-0', 'scale-95');
+        setTimeout(() => toast.remove(), 500);
+    }, 4000);
 }
