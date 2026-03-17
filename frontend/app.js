@@ -303,7 +303,7 @@ async function loadProductDetails() {
         const mainImg = document.getElementById('product-main-image');
         if (mainImg) {
             mainImg.parentElement.classList.remove('skeleton');
-            mainImg.src = (product.image_urls && product.image_urls.length > 0) ? product.image_urls[0] : 'placeholder.jpg';
+            mainImg.src = (product.image_urls && product.image_urls.length > 0) ? product.image_urls[0] : 'placeholder.png';
             mainImg.alt = product.name;
         }
 
@@ -476,7 +476,7 @@ function renderProductCard(product) {
             <div class="product-image-wrapper">
                 ${badge}
                 ${product.blurhash ? `<canvas id="${canvasId}" class="blurhash-canvas" width="32" height="32"></canvas>` : ''}
-                <img src="${product.image_urls?.[0] || 'placeholder.jpg'}" 
+                <img src="${product.image_urls?.[0] || 'placeholder.png'}" 
                      alt="${product.name}" 
                      class="product-image ${product.blurhash ? 'loading' : ''}"
                      onload="this.classList.remove('loading'); document.getElementById('${canvasId}')?.remove();">

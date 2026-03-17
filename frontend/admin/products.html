@@ -163,8 +163,8 @@
                 if (!response) return;
                 
                 const products = await response.json();
-                loading.remove();
-
+                if (loading) loading.remove();
+                
                 if (products.length === 0) {
                     listContainer.innerHTML = `
                         <div class="flex flex-col items-center justify-center py-20 text-muted">
@@ -182,7 +182,7 @@
                 listContainer.innerHTML = products.map(product => `
                     <div class="bg-surface dark:bg-surface-dark p-3 rounded-card shadow-card flex items-center gap-4 group active:scale-[0.98] transition-transform">
                         <div class="w-16 h-16 rounded-lg bg-background-light dark:bg-background-dark overflow-hidden flex-shrink-0">
-                            <img src="${product.image_urls?.[0] || '../placeholder.jpg'}" alt="${product.name}" class="w-full h-full object-cover">
+                            <img src="${product.image_urls?.[0] || '../placeholder.png'}" alt="${product.name}" class="w-full h-full object-cover">
                         </div>
                         <div class="flex-1 min-w-0">
                             <h3 class="font-semibold text-[15px] truncate">${product.name}</h3>
@@ -215,7 +215,9 @@
 
             } catch (error) {
                 console.error('Error:', error);
-                loading.innerHTML = `<p class="text-red-500">Failed to load products. Check connection.</p>`;
+                if (loading) {
+                    loading.innerHTML = `<p class="text-red-500">Failed to load products. Check connection.</p>`;
+                }
             }
         }
 
