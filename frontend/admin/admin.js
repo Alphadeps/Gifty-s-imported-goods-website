@@ -25,7 +25,7 @@ async function initAdminConfig() {
         const config = await response.json();
         window.CONFIG = config;
         
-        API_BASE_URL = config.Backend_URL || renderUrl;
+        API_BASE_URL = config.Backend_URL || config.BACKEND_URL || renderUrl;
         ADMIN_API_URL = `${API_BASE_URL}/api/v1/admin`;
         return true;
     } catch (error) {
@@ -314,7 +314,15 @@ async function adminFetch(endpoint, options = {}) {
         // --- Response Obfuscation Layer ---
         const originalJson = response.json.bind(response);
         response.json = async () => {
-            const data = await originalJson();
+            const text = await response.text();
+            if (!text) return null;
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                console.error("JSON parse failed:", e);
+                return text;
+            }
             if (data && data._d && typeof data._d === 'string') {
                 try {
                     // Robust UTF-8 Base64 decoding

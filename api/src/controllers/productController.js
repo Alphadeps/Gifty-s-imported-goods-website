@@ -84,12 +84,34 @@ const productController = {
                 SELECT p.*, c.name as category_name
                 FROM products p
                 LEFT JOIN categories c ON p.category_id = c.id
+                WHERE p.deleted_at IS NULL
                 ORDER BY p.created_at DESC
             `);
             res.status(200).json(result.rows);
         } catch (error) {
             console.error('Error fetching admin products:', error);
             res.status(500).json({ error: 'Internal server error fetching admin products' });
+        }
+    },
+
+    // GET /api/v1/admin/products/:id (Secured)
+    getAdminProductById: async (req, res) => {
+        const { id } = req.params;
+        try {
+            const result = await pool.query(`
+                SELECT p.*, c.name as category_name
+                FROM products p
+                LEFT JOIN categories c ON p.category_id = c.id
+                WHERE p.id = $1 AND p.deleted_at IS NULL
+            `, [id]);
+
+            if (result.rowCount === 0) {
+                return res.status(404).json({ error: 'Product not found' });
+            }
+            res.status(200).json(result.rows[0]);
+        } catch (error) {
+            console.error('Error fetching admin product by id:', error);
+            res.status(500).json({ error: 'Internal server error fetching product' });
         }
     },
 

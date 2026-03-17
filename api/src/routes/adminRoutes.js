@@ -13,6 +13,7 @@ const upload = multer({
 
 // Product Routes (Admin)
 router.get('/products', productController.getAdminProducts);
+router.get('/products/:id', productController.getAdminProductById);
 router.post('/products', productController.createProduct);
 router.put('/products', productController.updateProduct);
 router.delete('/products', productController.deleteProduct);

@@ -9,7 +9,7 @@ const configController = {
             // Only expose SAFE, public variables. 
             // NEVER include DATABASE_URL, SUPABASE_JWT_SECRET, or SERVICE_ROLE_KEYS here.
             const publicConfig = {
-                Backend_URL: process.env.BACKEND_URL || '', // Should match the actual host
+                Backend_URL: process.env.BACKEND_URL || process.env.Backend_URL || '', // Handle both casing variants
                 SUPABASE_URL: process.env.SUPABASE_URL || '',
                 SUPABASE_KEY: process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_KEY || '',
                 
